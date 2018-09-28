@@ -17,8 +17,8 @@ public class FileManagerApp {
 		
 //		Path dir = Paths.get("C:\\Users\\i830520\\Documents\\Misc\\Tech");
 //		String pattern = ".*";
-//		Utility u = new Utility();
-//		u.deleteFiles( dir, pattern );
+//		FileHelper fh = new FileHelper();
+//		fh.deleteFiles( dir, pattern );
 		
 		long endTime = System.currentTimeMillis();
 		LOGGER.info("Completed in " + (endTime - startTime) / 1000 + " second(s)..");

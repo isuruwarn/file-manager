@@ -18,9 +18,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BackupFileVisitor implements FileVisitor<Path> {
+public class BackupScanner implements FileVisitor<Path> {
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger( BackupFileVisitor.class );
+	private static final Logger LOGGER = LoggerFactory.getLogger( BackupScanner.class );
 	
 	private AtomicInteger totalFileCount;
 	private Calendar lastBackupTime;
@@ -28,7 +28,7 @@ public class BackupFileVisitor implements FileVisitor<Path> {
 	private List<BackupFileDTO> deltaDirs;
 	private List<String> excludePatterns;
 	
-	public BackupFileVisitor( Calendar lastBackupTime, List<Path> excludeDirs, List<String> excludePatterns ) {
+	public BackupScanner( Calendar lastBackupTime, List<Path> excludeDirs, List<String> excludePatterns ) {
 		this.lastBackupTime = lastBackupTime;
 		this.excludeDirs = excludeDirs;
 		this.excludePatterns = excludePatterns;

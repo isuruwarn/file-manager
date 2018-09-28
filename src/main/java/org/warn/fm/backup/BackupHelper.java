@@ -90,20 +90,20 @@ public class BackupHelper {
 		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.TIMESTAMP_FORMAT );
 		LOGGER.info("Last Backup Time - " + sdf.format( this.lastBackupTime.getTimeInMillis() ) );
 		
-		BackupFileVisitor fv = new BackupFileVisitor( this.lastBackupTime, this.excludeDirs, this.excludePatterns );
+		BackupScanner scanner = new BackupScanner( this.lastBackupTime, this.excludeDirs, this.excludePatterns );
 		try {
 			for( Path p: this.searchDirs ) {
-				Files.walkFileTree( p, fv );
+				Files.walkFileTree( p, scanner );
 			}
 		} catch (IOException e) {
 			LOGGER.error("Error while scanning for file changes", e);
 		}
 		
-		for( BackupFileDTO f: fv.getDeltaDirs() ) {
+		for( BackupFileDTO f: scanner.getDeltaDirs() ) {
 			LOGGER.debug( f.toString() );
 		}
-		LOGGER.info("Total Files - " + fv.getTotalFileCount() );
-		LOGGER.info("New or Modified Files - " + fv.getDeltaDirs().size() );
+		LOGGER.info("Total Files - " + scanner.getTotalFileCount() );
+		LOGGER.info("New or Modified Files - " + scanner.getDeltaDirs().size() );
 		
 	}
 
