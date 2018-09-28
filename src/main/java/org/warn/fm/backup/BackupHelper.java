@@ -99,7 +99,7 @@ public class BackupHelper {
 			LOGGER.error("Error while scanning for file changes", e);
 		}
 		
-		for( BackupFileDTO f: scanner.getDeltaDirs() ) {
+		for( BackupFile f: scanner.getDeltaDirs() ) {
 			LOGGER.debug( f.toString() );
 		}
 		LOGGER.info("Total Files - " + scanner.getTotalFileCount() );

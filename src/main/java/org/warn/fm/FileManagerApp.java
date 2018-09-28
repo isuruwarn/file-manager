@@ -15,10 +15,10 @@ public class FileManagerApp {
 		BackupHelper bh = new BackupHelper();
 		bh.scanForFileChanges();
 		
-//		Path dir = Paths.get("C:\\Users\\i830520\\Documents\\Misc\\Tech");
+//		String path = "C:\\Users\\i830520\\Documents\\Misc\\Tech";
 //		String pattern = ".*";
 //		FileHelper fh = new FileHelper();
-//		fh.deleteFiles( dir, pattern );
+//		fh.deleteFiles( path, pattern );
 		
 		long endTime = System.currentTimeMillis();
 		LOGGER.info("Completed in " + (endTime - startTime) / 1000 + " second(s)..");

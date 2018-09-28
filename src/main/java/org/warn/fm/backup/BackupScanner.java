@@ -25,7 +25,7 @@ public class BackupScanner implements FileVisitor<Path> {
 	private AtomicInteger totalFileCount;
 	private Calendar lastBackupTime;
 	private List<Path> excludeDirs;
-	private List<BackupFileDTO> deltaDirs;
+	private List<BackupFile> deltaDirs;
 	private List<String> excludePatterns;
 	
 	public BackupScanner( Calendar lastBackupTime, List<Path> excludeDirs, List<String> excludePatterns ) {
@@ -33,7 +33,7 @@ public class BackupScanner implements FileVisitor<Path> {
 		this.excludeDirs = excludeDirs;
 		this.excludePatterns = excludePatterns;
 		this.totalFileCount = new AtomicInteger(0);
-		this.deltaDirs = new ArrayList<BackupFileDTO>();
+		this.deltaDirs = new ArrayList<BackupFile>();
 	}
 
 	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -50,9 +50,9 @@ public class BackupScanner implements FileVisitor<Path> {
 		FileTime createdTime = attrs.creationTime();
 		FileTime modifiedTime = attrs.lastModifiedTime();
 		if( createdTime!=null && createdTime.toMillis() >= this.lastBackupTime.getTimeInMillis() ) {
-			deltaDirs.add( new BackupFileDTO( file, DeltaType.NEW, createdTime, modifiedTime ) );
+			deltaDirs.add( new BackupFile( file, DeltaType.NEW, createdTime, modifiedTime ) );
 		} else if( modifiedTime!=null && modifiedTime.toMillis() >= this.lastBackupTime.getTimeInMillis() ) {
-			deltaDirs.add( new BackupFileDTO( file, DeltaType.MODIFIED, createdTime, modifiedTime ) );
+			deltaDirs.add( new BackupFile( file, DeltaType.MODIFIED, createdTime, modifiedTime ) );
 		}
 		return CONTINUE;
 	}
@@ -74,7 +74,7 @@ public class BackupScanner implements FileVisitor<Path> {
 		return totalFileCount;
 	}
 
-	public List<BackupFileDTO> getDeltaDirs() {
+	public List<BackupFile> getDeltaDirs() {
 		return deltaDirs;
 	}
 
