@@ -15,11 +15,11 @@
 	</properties>
 
 	<dependencies>
-		<!--dependency>
+		<dependency>
 			<groupId>org.warn</groupId>
-			<artifactId>no-ads-browser-core</artifactId>
-			<version>1.0.3</version>
-		</dependency-->
+			<artifactId>java-util</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
