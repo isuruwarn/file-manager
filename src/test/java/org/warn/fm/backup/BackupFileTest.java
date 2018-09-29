@@ -17,51 +17,73 @@ public class BackupFileTest extends TestCase {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger( BackupFileTest.class );
 	
-	// if the other object is null, should return false
+	// reflexsive if the other object and this object are the same, should return true.
 	public void testEqualsCase1() { 
+		BackupFile f1 = new BackupFile( Paths.get("/abc/def") );
+		assertTrue( f1.equals(f1) );
+	}
+	
+	// reflexsive - if the other object refers to this object, should return true
+	public void testEqualsCase2() { 
+		BackupFile f1 = new BackupFile( Paths.get("/abc/def") );
+		BackupFile f2 = f1;
+		assertTrue( f1.equals(f2) );
+		
+		// should be symmetric
+		assertTrue( f2.equals(f1) );
+	}
+		
+	// if the other object is null, should return false
+	public void testEqualsCase3() { 
 		BackupFile f1 = new BackupFile( Paths.get("/abc/def") );
 		assertFalse( f1.equals(null) );
 	}
 	
 	// if other object is of different type, return false
-	public void testEqualsCase2() { 
+	public void testEqualsCase4() { 
 		BackupFile f1 = new BackupFile( Paths.get("/abc/def") );
 		assertFalse( f1.equals( "/abc/def" ) );
 	}
 	
 	// if both objects are non-null, but path is null in both, return true
-	public void testEqualsCase3() { 
+	public void testEqualsCase5() { 
 		BackupFile f1 = new BackupFile(null);
 		BackupFile f2 = new BackupFile(null);
 		assertTrue( f1.equals(f2) );
+		
+		// should be symmetric
+		assertTrue( f2.equals(f1) );
 	}
 	
 	// if path is null in this object, but non-null in the other, return false
-	public void testEqualsCase4() { 
+	public void testEqualsCase6() { 
 		BackupFile f1 = new BackupFile(null);
 		BackupFile f2 = new BackupFile( Paths.get("/abc/def") );
 		assertFalse( f1.equals(f2) );
 	}
 	
 	// if path is non-null in this object, but null in other object, return false 
-	public void testEqualsCase5() { 
+	public void testEqualsCase7() { 
 		BackupFile f1 = new BackupFile( Paths.get("/abc/def") );
 		BackupFile f2 = new BackupFile( null );
 		assertFalse( f1.equals(f2) );
 	}
 	
 	// different paths are set, should return false
-	public void testEqualsCase6() { 
+	public void testEqualsCase8() { 
 		BackupFile f1 = new BackupFile( Paths.get("/abc/def") );
 		BackupFile f2 = new BackupFile( Paths.get("/abc/ghi") );
 		assertFalse( f1.equals(f2) );
 	}
 	
 	// if paths are the same in both objects, return true
-	public void testEqualsCase7() {
+	public void testEqualsCase9() {
 		BackupFile f1 = new BackupFile( Paths.get("/abc/def") );
 		BackupFile f2 = new BackupFile( Paths.get("/abc/def") );
 		assertTrue( f1.equals(f2) );
+		
+		// should be symmetric
+		assertTrue( f2.equals(f1) );
 	}
 	
 	// if path is null, should return a value without throwing a NPE
