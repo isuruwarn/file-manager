@@ -70,8 +70,9 @@ public class BackupFile implements Comparable<BackupFile> {
 		if( other == null ) {
 			return false;
 		}
-		// if other object is of different type, return false
-		if( !( other instanceof BackupFile ) ) {
+		// if other object is of a different type, return false
+		// the getClass() method is used because the instanceof operator can return true for subclass instances as well
+		if( this.getClass() != other.getClass() ) {
 			return false;
 		}
 		BackupFile obj = (BackupFile) other;
