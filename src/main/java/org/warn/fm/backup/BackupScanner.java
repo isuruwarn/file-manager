@@ -10,9 +10,9 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
@@ -24,16 +24,16 @@ public class BackupScanner implements FileVisitor<Path> {
 	
 	private AtomicInteger totalFileCount;
 	private Calendar lastBackupTime;
-	private List<Path> excludeDirs;
-	private List<BackupFile> deltaDirs;
-	private List<String> excludePatterns;
+	private Set<Path> excludeDirs;
+	private Set<BackupFile> deltaDirs;
+	private Set<String> excludePatterns;
 	
-	public BackupScanner( Calendar lastBackupTime, List<Path> excludeDirs, List<String> excludePatterns ) {
+	public BackupScanner( Calendar lastBackupTime, Set<Path> excludeDirs, Set<String> excludePatterns ) {
 		this.lastBackupTime = lastBackupTime;
 		this.excludeDirs = excludeDirs;
 		this.excludePatterns = excludePatterns;
 		this.totalFileCount = new AtomicInteger(0);
-		this.deltaDirs = new ArrayList<BackupFile>();
+		this.deltaDirs = new TreeSet<BackupFile>();
 	}
 
 	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -74,7 +74,7 @@ public class BackupScanner implements FileVisitor<Path> {
 		return totalFileCount;
 	}
 
-	public List<BackupFile> getDeltaDirs() {
+	public Set<BackupFile> getDeltaDirs() {
 		return deltaDirs;
 	}
 
