@@ -6,10 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -105,7 +105,7 @@ public class BackupHelper {
 	}
 	
 	
-	public void scanForFileChanges() {
+	public Set<BackupFile> scanForFileChanges() {
 		
 		long startTime = System.currentTimeMillis();
 		
@@ -121,14 +121,22 @@ public class BackupHelper {
 			LOGGER.error("Error while scanning for file changes", e);
 		}
 		
-		for( BackupFile f: scanner.getDeltaDirs() ) {
+		Set<BackupFile> newOrModifiedFiles = scanner.getNewOrModifiedFiles();
+		for( BackupFile f: newOrModifiedFiles ) {
 			LOGGER.debug( f.toString() );
 		}
 		LOGGER.info("Total Files - " + scanner.getTotalFileCount() );
-		LOGGER.info("New or Modified Files - " + scanner.getDeltaDirs().size() );
+		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
 		
 		long endTime = System.currentTimeMillis();
 		LOGGER.info("Completed in " + (endTime - startTime) / 1000 + " second(s)..");
+		
+		return newOrModifiedFiles;
+	}
+	
+	public String getlastBackupTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.TIMESTAMP_FORMAT );
+		return sdf.format( this.lastBackupTime.getTimeInMillis() );
 	}
 	
 	private void addElements( List<String> list, Set<String> set ) {
