@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.config.ConfigConstants;
+import org.warn.fm.ui.UIContainer;
 import org.warn.utils.config.UserConfig;
 
 public class FileManagerApp {
@@ -16,34 +17,27 @@ public class FileManagerApp {
 	public static void main( String[] args ) {
 		
 		UserConfig uc = new UserConfig( null, ConfigConstants.FILEMAN_HOME_DIR_NAME, ConfigConstants.FILEMAN_CONFIG_FILE );
-		
-		final BackupHelper bh = new BackupHelper(uc);
+		BackupHelper bh = new BackupHelper(uc);
 		//bh.scanForFileChanges();
 		
 		try {
-			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 			
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			
+			LOGGER.error("Error while loading UI Manager", e);
 		} catch (InstantiationException e) {
-			e.printStackTrace();
-			
+			LOGGER.error("Error while loading UI Manager", e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			
+			LOGGER.error("Error while loading UI Manager", e);
 		} catch (UnsupportedLookAndFeelException e) {
-			System.err.println("Error - " + e.getMessage());
-			
+			LOGGER.error("Error while loading UI Manager", e);
 		}
 		
-    	javax.swing.SwingUtilities.invokeLater( new Runnable() {
-    		
-    		public void run() {
-    			new UIContainer(bh);
-            }
-    		
-        });
+		javax.swing.SwingUtilities.invokeLater( new Runnable() {
+			public void run() {
+				new UIContainer(bh);
+			}
+		});
 		
 //		String path = "C:\\Users\\i830520\\Documents\\Misc\\Tech";
 //		String pattern = ".*";

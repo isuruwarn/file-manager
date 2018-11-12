@@ -1,6 +1,7 @@
 package org.warn.fm.backup;
 
 import java.io.IOException;
+import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -50,6 +52,7 @@ public class BackupHelper {
 		// add any user defined paths from config file
 		addPathElements( uc.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ), this.includeDirs );
 		this.includeDirs.add( Paths.get( USER_HOME_DIR, "dev" ) );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, "OneDrive - SAP SE", "Documents" ) );
 		
 		// add any user defined exclude paths from config file
 		this.excludeDirs = new HashSet<Path>();
@@ -113,9 +116,10 @@ public class BackupHelper {
 		LOGGER.info("Last Backup Time - " + sdf.format( this.lastBackupTime.getTimeInMillis() ) );
 		
 		BackupScanner scanner = new BackupScanner( this.lastBackupTime, this.excludeDirs, this.excludePatterns );
+		EnumSet<FileVisitOption> opts = EnumSet.of(FileVisitOption.FOLLOW_LINKS);
 		try {
 			for( Path p: this.includeDirs ) {
-				Files.walkFileTree( p, scanner );
+				Files.walkFileTree( p, opts, Integer.MAX_VALUE, scanner );
 			}
 		} catch (IOException e) {
 			LOGGER.error("Error while scanning for file changes", e);
