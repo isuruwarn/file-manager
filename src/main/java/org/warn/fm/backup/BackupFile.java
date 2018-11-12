@@ -58,7 +58,7 @@ public class BackupFile implements Comparable<BackupFile> {
 	}
 	
 	public String toString() {
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.TIMESTAMP_FORMAT );
+		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 		return ( this.createdTime==null ? "" : "Created: " + sdf.format( this.createdTime.toMillis() ) +  " | " ) 
 			+ ( this.modifiedTime==null ? "" : "Modified: " + sdf.format( this.modifiedTime.toMillis() ) +  " | " ) 
 			+ ( this.deltaType==null ? "" : this.deltaType + " | " ) 

@@ -93,7 +93,7 @@ public class BackupHelper {
 		String strLastBackupTime = uc.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
 		if( strLastBackupTime != null && !strLastBackupTime.isEmpty() ) {
 			try {
-				SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.TIMESTAMP_FORMAT );
+				SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 				Date date = sdf. parse( strLastBackupTime );
 				Calendar cal = Calendar. getInstance();
 			    cal. setTime(date);
@@ -112,7 +112,7 @@ public class BackupHelper {
 		
 		long startTime = System.currentTimeMillis();
 		
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.TIMESTAMP_FORMAT );
+		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 		LOGGER.info("Last Backup Time - " + sdf.format( this.lastBackupTime.getTimeInMillis() ) );
 		
 		BackupScanner scanner = new BackupScanner( this.lastBackupTime, this.excludeDirs, this.excludePatterns );
@@ -139,7 +139,7 @@ public class BackupHelper {
 	}
 	
 	public String getlastBackupTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.TIMESTAMP_FORMAT );
+		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.SCAN_FROM_TS_FORMAT );
 		return sdf.format( this.lastBackupTime.getTimeInMillis() );
 	}
 	

@@ -16,8 +16,8 @@ public class FileManagerApp {
 	
 	public static void main( String[] args ) {
 		
-		UserConfig uc = new UserConfig( null, ConfigConstants.FILEMAN_HOME_DIR_NAME, ConfigConstants.FILEMAN_CONFIG_FILE );
-		BackupHelper bh = new BackupHelper(uc);
+		final UserConfig uc = new UserConfig( null, ConfigConstants.FILEMAN_HOME_DIR_NAME, ConfigConstants.FILEMAN_CONFIG_FILE );
+		final BackupHelper bh = new BackupHelper(uc);
 		//bh.scanForFileChanges();
 		
 		try {
@@ -35,7 +35,7 @@ public class FileManagerApp {
 		
 		javax.swing.SwingUtilities.invokeLater( new Runnable() {
 			public void run() {
-				new UIContainer(bh);
+				new UIContainer( bh, uc );
 			}
 		});
 		
