@@ -9,10 +9,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeSelectionModel;
 
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.config.ConfigConstants;
+import org.warn.fm.ui.listeners.FileTreeSelectionListener;
 import org.warn.fm.ui.listeners.MainActionListener;
 import org.warn.utils.config.UserConfig;
 
@@ -23,12 +28,15 @@ public class UIContainer {
 	public static final String BACKUP_BTN_ACTION = "Backup";
 	public static final String SCAN_AND_BACKUP_BTN_ACTION = "Scan and Backup";
 	public static final String BROWSE_BTN_ACTION = "Browse";
-	public static final String SCAN_FROM_LBL = "Scan from";
+	public static final String SCAN_FROM_LBL = "Scan From Date";
 	public static final String BACKUP_LOCATION_LBL = "Backup Location";
 	public static final String SETTINGS_BTN_ACTION = "\u2630";
+	public static final String FILE_TREE_ROOT_NODE = "..";
 	
-	private static final int FRAME_WIDTH = 800;
-	private static final int FRAME_HEIGHT = 800;
+	private static final int FRAME_WIDTH = 600;
+	private static final int FRAME_HEIGHT = 700;
+	private static final int SETTINGS_BTN_WIDTH = 100;
+	private static final int SETTINGS_BTN_HEIGHT = 25;
 	private static final int SCAN_FROM_LBL_WIDTH = 100;
 	private static final int SCAN_FROM_LBL_HEIGHT = 25;
 	private static final int SCAN_FROM_TXT_WIDTH = 100;
@@ -37,16 +45,18 @@ public class UIContainer {
 	private static final int FILL_SPACE1_HEIGHT = 25;
 	private static final int SCAN_BTN_WIDTH = 100;
 	private static final int SCAN_BTN_HEIGHT = 25;
-	private static final int BACKUP_BTN_WIDTH = 100;
-	private static final int BACKUP_BTN_HEIGHT = 25;
-	private static final int BROWSE_BTN_WIDTH = 15;
-	private static final int BROWSE_BTN_HEIGHT = 25;
-	private static final int SETTINGS_BTN_WIDTH = 100;
-	private static final int SETTINGS_BTN_HEIGHT = 25;
+	private static final int FILE_TREE_WIDTH = 500;
+	private static final int FILE_TREE_HEIGHT = 550;
 	private static final int TARGET_LOCATION_LBL_WIDTH = 100;
 	private static final int TARGET_LOCATION_LBL_HEIGHT = 25;
 	private static final int TARGET_LOCATION_TXT_WIDTH = 275;
 	private static final int TARGET_LOCATION_TXT_HEIGHT = 25;
+	private static final int BROWSE_BTN_WIDTH = 15;
+	private static final int BROWSE_BTN_HEIGHT = 25;
+	private static final int BACKUP_BTN_WIDTH = 100;
+	private static final int BACKUP_BTN_HEIGHT = 25;
+	private static final int STATUS_LBL_WIDTH = FRAME_WIDTH;
+	private static final int STATUS_LBL_HEIGHT = 25;
 	
 	public UIContainer( BackupHelper backupHelper, UserConfig userConfig ) {
 		
@@ -66,6 +76,16 @@ public class UIContainer {
 		scanBtn.setPreferredSize( new Dimension( SCAN_BTN_WIDTH, SCAN_BTN_HEIGHT ) );
 		scanBtn.setMinimumSize( new Dimension( SCAN_BTN_WIDTH, SCAN_BTN_HEIGHT ) );
 		
+		JTree fileTree = new JTree( new DefaultMutableTreeNode( FILE_TREE_ROOT_NODE ) );
+		fileTree.setRootVisible(false);
+		fileTree.setEditable(true);
+		//fileTree.setShowsRootHandles(true);
+		fileTree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
+		FileTreeSelectionListener treeListener = new FileTreeSelectionListener();
+		fileTree.addTreeSelectionListener(treeListener);
+		JScrollPane fileTreeScrollPane = new JScrollPane(fileTree);
+		fileTreeScrollPane.setMinimumSize( new Dimension( FILE_TREE_HEIGHT, FILE_TREE_WIDTH ) );
+		
 		JLabel backupLocationLbl = new JLabel(BACKUP_LOCATION_LBL);
 		backupLocationLbl.setPreferredSize( new Dimension( TARGET_LOCATION_LBL_WIDTH, TARGET_LOCATION_LBL_HEIGHT ) );
 		backupLocationLbl.setMinimumSize( new Dimension( TARGET_LOCATION_LBL_WIDTH, TARGET_LOCATION_LBL_HEIGHT ) );
@@ -84,77 +104,95 @@ public class UIContainer {
 		backupBtn.setMinimumSize( new Dimension( BACKUP_BTN_WIDTH, BACKUP_BTN_HEIGHT ) );
 		backupBtn.setEnabled(false);
 		
-		JButton settingsBtn = new JButton(SCAN_BTN_ACTION);
+		JButton settingsBtn = new JButton(SETTINGS_BTN_ACTION);
 		settingsBtn.setPreferredSize( new Dimension( SETTINGS_BTN_WIDTH, SETTINGS_BTN_HEIGHT ) );
 		settingsBtn.setMinimumSize( new Dimension( SETTINGS_BTN_WIDTH, SETTINGS_BTN_HEIGHT ) );
+		
+		JLabel statusLbl = new JLabel();
+		statusLbl.setPreferredSize( new Dimension( STATUS_LBL_WIDTH, STATUS_LBL_HEIGHT ) );
+		statusLbl.setMinimumSize( new Dimension( STATUS_LBL_WIDTH, STATUS_LBL_HEIGHT ) );
 		
 		GridBagConstraints x0y0GridCons = new GridBagConstraints();
 		x0y0GridCons.gridx = 0;
 		x0y0GridCons.gridy = 0;
-		x0y0GridCons.insets = new Insets(5,10,5,10);
+		x0y0GridCons.insets = new Insets(10,30,10,0);
 		x0y0GridCons.anchor = GridBagConstraints.LINE_START;
 		
 		GridBagConstraints x1y0GridCons = new GridBagConstraints();
 		x1y0GridCons.gridx = 1;
 		x1y0GridCons.gridy = 0;
-		x1y0GridCons.insets = new Insets(5,10,5,0);
+		x1y0GridCons.insets = new Insets(10,0,10,0);
 		x1y0GridCons.anchor = GridBagConstraints.BASELINE_LEADING;
 		
 		GridBagConstraints x2y0GridCons = new GridBagConstraints();
 		x2y0GridCons.gridx = 2;
 		x2y0GridCons.gridy = 0;
-		x2y0GridCons.insets = new Insets(5,0,5,10);
+		x2y0GridCons.insets = new Insets(0,0,0,0);
 		
 		GridBagConstraints x3y0GridCons = new GridBagConstraints();
 		x3y0GridCons.gridx = 3;
 		x3y0GridCons.gridy = 0;
-		x3y0GridCons.insets = new Insets(5,10,5,10);
+		x3y0GridCons.insets = new Insets(10,0,10,0);
 		
 		GridBagConstraints x0y1GridCons = new GridBagConstraints();
 		x0y1GridCons.gridx = 0;
 		x0y1GridCons.gridy = 1;
-		x0y1GridCons.insets = new Insets(5,10,5,10);
-		x0y1GridCons.anchor = GridBagConstraints.LINE_START;
+		x0y1GridCons.insets = new Insets(10,10,10,10);
+		x0y1GridCons.gridwidth = 4;
 		
-		GridBagConstraints x1y1GridCons = new GridBagConstraints();
-		x1y1GridCons.gridx = 1;
-		x1y1GridCons.gridy = 1;
-		x1y1GridCons.insets = new Insets(5,10,5,0);
+		GridBagConstraints x0y2GridCons = new GridBagConstraints();
+		x0y2GridCons.gridx = 0;
+		x0y2GridCons.gridy = 2;
+		x0y2GridCons.insets = new Insets(10,30,10,0);
 		
-		GridBagConstraints x2y1GridCons = new GridBagConstraints();
-		x2y1GridCons.gridx = 2;
-		x2y1GridCons.gridy = 1;
-		x2y1GridCons.insets = new Insets(5,0,5,10);
+		GridBagConstraints x1y2GridCons = new GridBagConstraints();
+		x1y2GridCons.gridx = 1;
+		x1y2GridCons.gridy = 2;
+		x1y2GridCons.insets = new Insets(10,0,10,0);
 		
-		GridBagConstraints x3y1GridCons = new GridBagConstraints();
-		x3y1GridCons.gridx = 3;
-		x3y1GridCons.gridy = 1;
-		x3y1GridCons.insets = new Insets(5,10,5,10);
+		GridBagConstraints x2y2GridCons = new GridBagConstraints();
+		x2y2GridCons.gridx = 2;
+		x2y2GridCons.gridy = 2;
+		x2y2GridCons.insets = new Insets(10,0,10,10);
+		
+		GridBagConstraints x3y2GridCons = new GridBagConstraints();
+		x3y2GridCons.gridx = 3;
+		x3y2GridCons.gridy = 2;
+		x3y2GridCons.insets = new Insets(10,0,10,0);
+		
+		GridBagConstraints x0y3GridCons = new GridBagConstraints();
+		x0y3GridCons.gridx = 0;
+		x0y3GridCons.gridy = 3;
+		x0y3GridCons.insets = new Insets(20,30,0,10);
+		x0y3GridCons.gridwidth = 4;
 		
 		JPanel panel = new JPanel();
-		//panel.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
-		//panel.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
+		panel.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
+		panel.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		panel.setLayout( new GridBagLayout() );
 		panel.add( scanFromDateLabel, x0y0GridCons );
 		panel.add( scanFromDateTxt, x1y0GridCons );
 		panel.add( fillSpace1Lbl, x2y0GridCons );
 		panel.add( scanBtn, x3y0GridCons );
-		panel.add( backupLocationLbl, x0y1GridCons );
-		panel.add( backupLocationTxt, x1y1GridCons );
-		panel.add( backupLocBrowseBtn, x2y1GridCons );
-		panel.add( backupBtn, x3y1GridCons );
-
+		panel.add( fileTreeScrollPane, x0y1GridCons );
+		panel.add( backupLocationLbl, x0y2GridCons );
+		panel.add( backupLocationTxt, x1y2GridCons );
+		panel.add( backupLocBrowseBtn, x2y2GridCons );
+		panel.add( backupBtn, x3y2GridCons );
+		panel.add( statusLbl, x0y3GridCons );
+		
 		JFrame mainFrame = new JFrame(TITLE);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		mainFrame.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		mainFrame.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
+		mainFrame.setMaximumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		mainFrame.getContentPane().add(panel);
-		mainFrame.isResizable();
+		mainFrame.setResizable(false);
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null); // position to center of screen 
 		mainFrame.setVisible(true);
 		
-		MainActionListener mainActionListener = new MainActionListener( backupHelper, backupBtn );
+		MainActionListener mainActionListener = new MainActionListener( backupHelper, backupBtn, fileTree, statusLbl );
 		scanBtn.addActionListener(mainActionListener);
 		backupBtn.addActionListener(mainActionListener);
 		

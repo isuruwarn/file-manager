@@ -126,9 +126,9 @@ public class BackupHelper {
 		}
 		
 		Set<BackupFile> newOrModifiedFiles = scanner.getNewOrModifiedFiles();
-		for( BackupFile f: newOrModifiedFiles ) {
+		newOrModifiedFiles.stream().forEach( f -> {
 			LOGGER.debug( f.toString() );
-		}
+		});
 		LOGGER.info("Total Files - " + scanner.getTotalFileCount() );
 		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
 		

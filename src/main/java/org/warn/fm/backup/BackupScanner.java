@@ -39,8 +39,9 @@ public class BackupScanner implements FileVisitor<Path> {
 	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 		String dirName = dir.getName( dir.getNameCount()-1 ).toString();
 		if( this.excludeDirs.contains(dir) || this.excludePatterns.contains( dirName ) ) {
-			//LOGGER.debug("SKIPPING SUBTREE - " + dir);
 			return SKIP_SUBTREE;
+		} else {
+			//newOrModifiedFiles.add( new BackupFile( dir, true, null, null, null ) );
 		}
 		return CONTINUE;
 	}

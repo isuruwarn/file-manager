@@ -1,5 +1,6 @@
 package org.warn.fm;
 
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -33,7 +34,7 @@ public class FileManagerApp {
 			LOGGER.error("Error while loading UI Manager", e);
 		}
 		
-		javax.swing.SwingUtilities.invokeLater( new Runnable() {
+		SwingUtilities.invokeLater( new Runnable() {
 			public void run() {
 				new UIContainer( bh, uc );
 			}
