@@ -40,8 +40,6 @@ public class BackupScanner implements FileVisitor<Path> {
 		String dirName = dir.getName( dir.getNameCount()-1 ).toString();
 		if( this.excludeDirs.contains(dir) || this.excludePatterns.contains( dirName ) ) {
 			return SKIP_SUBTREE;
-		} else {
-			//newOrModifiedFiles.add( new BackupFile( dir, true, null, null, null ) );
 		}
 		return CONTINUE;
 	}

@@ -13,16 +13,13 @@ public class BackupFile implements Comparable<BackupFile> {
 	private DeltaType deltaType;
 	private FileTime createdTime;
 	private FileTime modifiedTime;
-	//private boolean isDir;
 	
 	public BackupFile( Path path ) {
 		this.path = path;
 	}
 	
 	public BackupFile( Path path, DeltaType deltaType, FileTime createdTime, FileTime modifiedTime ) {
-	//public BackupFile( Path path, boolean isDir, DeltaType deltaType, FileTime createdTime, FileTime modifiedTime ) {
 		this.path = path;
-		//this.isDir = isDir;
 		this.deltaType = deltaType;
 		this.createdTime = createdTime;
 		this.modifiedTime = modifiedTime;
@@ -35,14 +32,6 @@ public class BackupFile implements Comparable<BackupFile> {
 	public void setPath(Path path) {
 		this.path = path;
 	}
-	
-//	public boolean isDir() {
-//		return isDir;
-//	}
-
-//	public void setDir(boolean isDir) {
-//		this.isDir = isDir;
-//	}
 
 	public DeltaType getDeltaType() {
 		return deltaType;
