@@ -24,11 +24,11 @@ public class BackupScanner implements FileVisitor<Path> {
 	
 	private AtomicInteger totalFileCount;
 	private Calendar lastBackupTime;
-	private Set<Path> excludeDirs;
+	private Set<String> excludeDirs;
 	private Set<BackupFile> newOrModifiedFiles;
 	private Set<String> excludePatterns;
 	
-	public BackupScanner( Calendar lastBackupTime, Set<Path> excludeDirs, Set<String> excludePatterns ) {
+	public BackupScanner( Calendar lastBackupTime, Set<String> excludeDirs, Set<String> excludePatterns ) {
 		this.lastBackupTime = lastBackupTime;
 		this.excludeDirs = excludeDirs;
 		this.excludePatterns = excludePatterns;
@@ -38,7 +38,7 @@ public class BackupScanner implements FileVisitor<Path> {
 
 	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 		String dirName = dir.getName( dir.getNameCount()-1 ).toString();
-		if( this.excludeDirs.contains(dir) || this.excludePatterns.contains( dirName ) ) {
+		if( this.excludeDirs.contains( dir.toString() ) || this.excludePatterns.contains( dirName ) ) {
 			return SKIP_SUBTREE;
 		}
 		return CONTINUE;

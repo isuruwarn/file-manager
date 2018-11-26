@@ -3,7 +3,6 @@ package org.warn.fm.backup;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,47 +31,47 @@ public class BackupHelper {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger( BackupHelper.class );
 	
-	private Set<Path> includeDirs;
-	private Set<Path> excludeDirs;
+	private Set<String> includeDirs;
+	private Set<String> excludeDirs;
 	private Set<String> includePatterns;
 	private Set<String> excludePatterns;
 	private Calendar lastBackupTime;
 	
 	public BackupHelper( UserConfig uc ) {
 		
-		this.includeDirs = new HashSet<Path>();
+		this.includeDirs = new HashSet<String>();
 		
 		// add default paths
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, DOCUMENTS ) );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, PICTURES ) );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, MUSIC ) );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, VIDEOS ) );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, DOWNLOADS ) );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, DOCUMENTS ).toString() );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, PICTURES ).toString() );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, MUSIC ).toString() );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, VIDEOS ).toString() );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, DOWNLOADS ).toString() );
 		
 		// add any user defined paths from config file
-		addPathElements( uc.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ), this.includeDirs );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, "dev" ) );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, "OneDrive - SAP SE", "Documents" ) );
+		addElements( uc.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ), this.includeDirs );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, "dev" ).toString() );
+		this.includeDirs.add( Paths.get( USER_HOME_DIR, "OneDrive - SAP SE", "Documents" ).toString() );
 		
 		// add any user defined exclude paths from config file
-		this.excludeDirs = new HashSet<Path>();
-		addPathElements( uc.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ), this.excludeDirs );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/android" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-httpd" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-jmeter-4.0" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-maven-3.3.9" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-tomee-plus-7.0.4" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/eclipse" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/fortify" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/git/sap" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/git/tools" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/git/isuru" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/hana" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/hdbstudio_workspace" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/Ruby22-x64" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/xsa" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/archive/Rails" ) );
-		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/eclipse_workspaces" ) );
+		this.excludeDirs = new HashSet<String>();
+		addElements( uc.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ), this.excludeDirs );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/android" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-httpd" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-jmeter-4.0" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-maven-3.3.9" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-tomee-plus-7.0.4" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/eclipse" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/fortify" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/git/sap" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/git/tools" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/git/isuru" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/hana" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/hdbstudio_workspace" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/Ruby22-x64" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/xsa" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/archive/Rails" ).toString() );
+		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/eclipse_workspaces" ).toString() );
 		
 		// add any user defined exclude patterns from config file
 		this.excludePatterns = new HashSet<String>();
@@ -118,8 +117,8 @@ public class BackupHelper {
 		BackupScanner scanner = new BackupScanner( this.lastBackupTime, this.excludeDirs, this.excludePatterns );
 		EnumSet<FileVisitOption> opts = EnumSet.of(FileVisitOption.FOLLOW_LINKS);
 		try {
-			for( Path p: this.includeDirs ) {
-				Files.walkFileTree( p, opts, Integer.MAX_VALUE, scanner );
+			for( String dir: this.includeDirs ) {
+				Files.walkFileTree( Paths.get(dir), opts, Integer.MAX_VALUE, scanner );
 			}
 		} catch (IOException e) {
 			LOGGER.error("Error while scanning for file changes", e);
@@ -151,14 +150,6 @@ public class BackupHelper {
 		}
 	}
 	
-	private void addPathElements( List<String> list, Set<Path> set ) {
-		if( list != null ) {
-			for( String s: list ) {
-				set.add( Paths.get(s) );
-			}
-		}
-	}
-	
 	private void setDefaultBackupTimestamp() {
 		this.lastBackupTime = Calendar.getInstance();
 		this.lastBackupTime.add( Calendar.MONTH, -6 );
@@ -167,4 +158,37 @@ public class BackupHelper {
 		this.lastBackupTime.set( Calendar.SECOND, 0 );
 		this.lastBackupTime.set( Calendar.MILLISECOND, 0 );
 	}
+
+	public Set<String> getIncludeDirs() {
+		return includeDirs;
+	}
+
+	public void setIncludeDirs(Set<String> includeDirs) {
+		this.includeDirs = includeDirs;
+	}
+
+	public Set<String> getExcludeDirs() {
+		return excludeDirs;
+	}
+
+	public void setExcludeDirs(Set<String> excludeDirs) {
+		this.excludeDirs = excludeDirs;
+	}
+
+	public Set<String> getIncludePatterns() {
+		return includePatterns;
+	}
+
+	public void setIncludePatterns(Set<String> includePatterns) {
+		this.includePatterns = includePatterns;
+	}
+
+	public Set<String> getExcludePatterns() {
+		return excludePatterns;
+	}
+
+	public void setExcludePatterns(Set<String> excludePatterns) {
+		this.excludePatterns = excludePatterns;
+	}
+	
 }

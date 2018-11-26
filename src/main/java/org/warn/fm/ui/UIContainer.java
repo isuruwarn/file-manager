@@ -224,7 +224,7 @@ public class UIContainer {
 		mainFrame.setLocationRelativeTo(null); // position to center of screen 
 		mainFrame.setVisible(true);
 		
-		MainActionListener mainActionListener = new MainActionListener( backupHelper, backupBtn, fileTree, statusLbl );
+		MainActionListener mainActionListener = new MainActionListener( backupHelper, mainFrame, fileTree, backupLocationTxt, backupBtn, statusLbl );
 		scanBtn.addActionListener(mainActionListener);
 		manageIncludeDirs.addActionListener(mainActionListener);
 		manageIncludePatterns.addActionListener(mainActionListener);
