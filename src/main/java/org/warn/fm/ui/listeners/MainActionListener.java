@@ -104,22 +104,22 @@ public class MainActionListener implements ActionListener {
 			
 			case UIContainer.MANAGE_INCLUDE_DIRS_ACTION:
 				JPanel includeDirsListPanel = ListManagerHelper.createListPanel( backupHelper.getIncludeDirs() );
-				JOptionPane.showMessageDialog( mainFrane, includeDirsListPanel, "Manage Include Directories", JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, includeDirsListPanel, ListManagerHelper.MANAGE_INCLUDE_DIRS, JOptionPane.NO_OPTION );
 				break;
 			
 			case UIContainer.MANAGE_INCLUDE_PATTERNS_ACTION:
 				JPanel includePatternsListPanel = ListManagerHelper.createListPanel( backupHelper.getIncludePatterns() );
-				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, "Manage Include Patterns", JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, ListManagerHelper.MANAGE_INCLUDE_PATTERNS, JOptionPane.NO_OPTION );
 				break;
 			
 			case UIContainer.MANAGE_EXCLUDE_DIRS_ACTION:
 				JPanel excludeDirsListPanel = ListManagerHelper.createListPanel( backupHelper.getExcludeDirs() );
-				JOptionPane.showMessageDialog( mainFrane, excludeDirsListPanel, "Manage Exclude Directories", JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, excludeDirsListPanel, ListManagerHelper.MANAGE_EXCLUDE_DIRS, JOptionPane.NO_OPTION );
 				break;
 			
 			case UIContainer.MANAGE_EXCLUDE_PATTERNS_ACTION:
 				JPanel excludePatternsListPanel = ListManagerHelper.createListPanel( backupHelper.getExcludePatterns() );
-				JOptionPane.showMessageDialog( mainFrane, excludePatternsListPanel, "Manage Exclude Patterns", JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, excludePatternsListPanel, ListManagerHelper.MANAGE_EXCLUDE_PATTERNS, JOptionPane.NO_OPTION );
 				break;
 			
 		}
