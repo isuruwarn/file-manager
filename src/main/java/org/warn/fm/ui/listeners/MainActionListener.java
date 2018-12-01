@@ -23,6 +23,7 @@ import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListManagerHelper;
 import org.warn.fm.ui.UIContainer;
+import org.warn.fm.util.GlobalConstants;
 
 public class MainActionListener implements ActionListener {
 	
@@ -103,23 +104,23 @@ public class MainActionListener implements ActionListener {
 				break;
 			
 			case UIContainer.MANAGE_INCLUDE_DIRS_ACTION:
-				JPanel includeDirsListPanel = ListManagerHelper.createListPanel( backupHelper.getIncludeDirs(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, includeDirsListPanel, ListManagerHelper.MANAGE_INCLUDE_DIRS, JOptionPane.NO_OPTION );
+				JPanel includeDirsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_INCLUDE_DIRS, this.backupHelper.getIncludeDirs(), this.backupHelper );
+				JOptionPane.showMessageDialog( mainFrane, includeDirsListPanel, GlobalConstants.MANAGE_INCLUDE_DIRS, JOptionPane.NO_OPTION );
 				break;
 			
 			case UIContainer.MANAGE_INCLUDE_PATTERNS_ACTION:
-				JPanel includePatternsListPanel = ListManagerHelper.createListPanel( backupHelper.getIncludePatterns(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, ListManagerHelper.MANAGE_INCLUDE_PATTERNS, JOptionPane.NO_OPTION );
+				JPanel includePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_INCLUDE_PATTERNS, this.backupHelper.getIncludePatterns(), this.backupHelper );
+				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, GlobalConstants.MANAGE_INCLUDE_PATTERNS, JOptionPane.NO_OPTION );
 				break;
 			
 			case UIContainer.MANAGE_EXCLUDE_DIRS_ACTION:
-				JPanel excludeDirsListPanel = ListManagerHelper.createListPanel( backupHelper.getExcludeDirs(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, excludeDirsListPanel, ListManagerHelper.MANAGE_EXCLUDE_DIRS, JOptionPane.NO_OPTION );
+				JPanel excludeDirsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_DIRS, this.backupHelper.getExcludeDirs(), this.backupHelper );
+				JOptionPane.showMessageDialog( mainFrane, excludeDirsListPanel, GlobalConstants.MANAGE_EXCLUDE_DIRS, JOptionPane.NO_OPTION );
 				break;
 			
 			case UIContainer.MANAGE_EXCLUDE_PATTERNS_ACTION:
-				JPanel excludePatternsListPanel = ListManagerHelper.createListPanel( backupHelper.getExcludePatterns(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, excludePatternsListPanel, ListManagerHelper.MANAGE_EXCLUDE_PATTERNS, JOptionPane.NO_OPTION );
+				JPanel excludePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_PATTERNS, this.backupHelper.getExcludePatterns(), this.backupHelper );
+				JOptionPane.showMessageDialog( mainFrane, excludePatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_PATTERNS, JOptionPane.NO_OPTION );
 				break;
 			
 		}

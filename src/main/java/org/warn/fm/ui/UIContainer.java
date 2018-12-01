@@ -14,7 +14,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -117,10 +116,10 @@ public class UIContainer {
 		backupBtn.setEnabled(false);
 		//backupBtn.setBorder( BorderFactory.createLineBorder(Color.black) );
 		
-		JMenuItem manageIncludeDirs = new JRadioButtonMenuItem( MANAGE_INCLUDE_DIRS_ACTION );
-		JMenuItem manageIncludePatterns = new JRadioButtonMenuItem( MANAGE_INCLUDE_PATTERNS_ACTION );
-		JMenuItem manageExcludeDirs = new JRadioButtonMenuItem( MANAGE_EXCLUDE_DIRS_ACTION );
-		JMenuItem manageExcludePatterns = new JRadioButtonMenuItem( MANAGE_EXCLUDE_PATTERNS_ACTION );
+		JMenuItem manageIncludeDirs = new JMenuItem( MANAGE_INCLUDE_DIRS_ACTION );
+		JMenuItem manageIncludePatterns = new JMenuItem( MANAGE_INCLUDE_PATTERNS_ACTION );
+		JMenuItem manageExcludeDirs = new JMenuItem( MANAGE_EXCLUDE_DIRS_ACTION );
+		JMenuItem manageExcludePatterns = new JMenuItem( MANAGE_EXCLUDE_PATTERNS_ACTION );
 		
 		JMenu settingsMenu = new JMenu(SETTINGS_BTN_ACTION);
 		settingsMenu.setPreferredSize( new Dimension( SETTINGS_BTN_WIDTH, SETTINGS_BTN_HEIGHT ) );

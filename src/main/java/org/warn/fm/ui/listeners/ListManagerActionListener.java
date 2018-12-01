@@ -3,6 +3,8 @@ package org.warn.fm.ui.listeners;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -16,22 +18,25 @@ import javax.swing.event.ListSelectionListener;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.ListManagerHelper;
 
+// https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
 public class ListManagerActionListener implements ActionListener, ListSelectionListener, DocumentListener {
 	
 	private boolean alreadyEnabled = false;
+	private String actionType;
 	private JButton addItemBtn;
 	private JButton removeItemBtn;
 	private JTextField newItemTxt;
-	private JList<String> list;
+	private JList<String> jList;
 	private DefaultListModel<String> listModel;
 	private BackupHelper backupHelper;
 	
-	public ListManagerActionListener( JButton addItemBtn, JButton removeItemBtn, JTextField newItemTxt, JList<String> list, 
+	public ListManagerActionListener( String actionType, JButton addItemBtn, JButton removeItemBtn, JTextField newItemTxt, JList<String> jList, 
 			DefaultListModel<String> listModel, BackupHelper backupHelper ) {
+		this.actionType = actionType;
 		this.addItemBtn = addItemBtn;
 		this.removeItemBtn = removeItemBtn;
 		this.newItemTxt = newItemTxt;
-		this.list = list;
+		this.jList = jList;
 		this.listModel = listModel;
 		this.backupHelper = backupHelper;
 	}
@@ -43,34 +48,36 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 		switch(command) {
 			
 			case ListManagerHelper.ADD_ITEM_ACTION:
-				String name = newItemTxt.getText();
+				String name = this.newItemTxt.getText();
 		
 				//User didn't type in a unique name...
 				if (name.equals("") || alreadyInList(name)) {
 					Toolkit.getDefaultToolkit().beep();
-					newItemTxt.requestFocusInWindow();
-					newItemTxt.selectAll();
+					this.newItemTxt.requestFocusInWindow();
+					this.newItemTxt.selectAll();
 					return;
 				}
 				
-				int index = list.getSelectedIndex(); //get selected index
+				int index = this.jList.getSelectedIndex(); //get selected index
 				if (index == -1) { //no selection, so insert at beginning
 					index = 0;
 				} else {		   //add after the selected item
 					index++;
 				}
 		
-				listModel.insertElementAt(newItemTxt.getText(), index);
+				this.listModel.insertElementAt( this.newItemTxt.getText(), index );
 				//If we just wanted to add to the end, we'd do this:
 				//listModel.addElement(newItemTxt.getText());
 		
 				//Reset the text field.
-				newItemTxt.requestFocusInWindow();
-				newItemTxt.setText("");
+				this.newItemTxt.requestFocusInWindow();
+				this.newItemTxt.setText("");
 		
 				//Select the new item and make it visible.
-				list.setSelectedIndex(index);
-				list.ensureIndexIsVisible(index);
+				this.jList.setSelectedIndex(index);
+				this.jList.ensureIndexIsVisible(index);
+				
+				this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
 				
 				break;
 			
@@ -78,23 +85,25 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				//This method can be called only if
 				//there's a valid selection
 				//so go ahead and remove whatever's selected.
-				int index2 = list.getSelectedIndex();
-				listModel.remove(index2);
+				int index2 = this.jList.getSelectedIndex();
+				this.listModel.remove(index2);
 
-				int size = listModel.getSize();
+				int size = this.listModel.getSize();
 
 				if (size == 0) { //Nobody's left, disable firing.
-					removeItemBtn.setEnabled(false);
+					this.removeItemBtn.setEnabled(false);
 
 				} else { //Select an index.
-					if (index2 == listModel.getSize()) {
+					if (index2 == this.listModel.getSize()) {
 						//removed item in last position
 						index2--;
 					}
-
-					list.setSelectedIndex(index2);
-					list.ensureIndexIsVisible(index2);
+					this.jList.setSelectedIndex(index2);
+					this.jList.ensureIndexIsVisible(index2);
 				}
+				
+				this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
+				
 				break;
 		}
 	}
@@ -102,13 +111,13 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 	public void valueChanged(ListSelectionEvent e) {
 		if (e.getValueIsAdjusting() == false) {
 
-			if (list.getSelectedIndex() == -1) {
+			if (this.jList.getSelectedIndex() == -1) {
 				//No selection, disable fire button.
-				removeItemBtn.setEnabled(false);
+				this.removeItemBtn.setEnabled(false);
 
 			} else {
 				//Selection, enable the fire button.
-				removeItemBtn.setEnabled(true);
+				this.removeItemBtn.setEnabled(true);
 			}
 		}
 	}
@@ -117,7 +126,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 	//get more sophisticated about the algorithm.  For example,
 	//you might want to ignore white space and capitalization.
 	protected boolean alreadyInList(String name) {
-		return listModel.contains(name);
+		return this.listModel.contains(name);
 	}
 
 	//Required by DocumentListener.
@@ -138,17 +147,25 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 	}
 
 	private void enableButton() {
-		if (!alreadyEnabled) {
-			addItemBtn.setEnabled(true);
+		if (!this.alreadyEnabled) {
+			this.addItemBtn.setEnabled(true);
 		}
 	}
 
 	private boolean handleEmptyTextField(DocumentEvent e) {
 		if (e.getDocument().getLength() <= 0) {
-			addItemBtn.setEnabled(false);
-			alreadyEnabled = false;
+			this.addItemBtn.setEnabled(false);
+			this.alreadyEnabled = false;
 			return true;
 		}
 		return false;
+	}
+	
+	private Set<String> generateSetFromListModel() {
+		Set<String> updatedList = new HashSet<String>();
+		for( int i=0; i<this.listModel.size(); i++ ) {
+			updatedList.add(  this.listModel.get(i) );
+		}
+		return updatedList;
 	}
 }

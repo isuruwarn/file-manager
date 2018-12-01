@@ -166,36 +166,58 @@ public class BackupHelper {
 		return includeDirs;
 	}
 
-	public void saveIncludeDirs(Set<String> includeDirs) {
-		this.includeDirs = includeDirs;
-		userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, includeDirs );
-	}
+//	public void saveIncludeDirs(Set<String> includeDirs) {
+//		this.includeDirs = includeDirs;
+//		userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, includeDirs );
+//	}
 
 	public Set<String> getExcludeDirs() {
 		return excludeDirs;
 	}
 
-	public void saveExcludeDirs(Set<String> excludeDirs) {
-		this.excludeDirs = excludeDirs;
-		userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, excludeDirs );
-	}
+//	public void saveExcludeDirs(Set<String> excludeDirs) {
+//		this.excludeDirs = excludeDirs;
+//		userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, excludeDirs );
+//	}
 
 	public Set<String> getIncludePatterns() {
 		return includePatterns;
 	}
 
-	public void saveIncludePatterns(Set<String> includePatterns) {
-		this.includePatterns = includePatterns;
-		userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS, includePatterns );
-	}
+//	public void saveIncludePatterns(Set<String> includePatterns) {
+//		this.includePatterns = includePatterns;
+//		userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS, includePatterns );
+//	}
 
 	public Set<String> getExcludePatterns() {
 		return excludePatterns;
 	}
 
-	public void saveExcludePatterns(Set<String> excludePatterns) {
-		this.excludePatterns = excludePatterns;
-		userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS, excludePatterns );
+//	public void saveExcludePatterns(Set<String> excludePatterns) {
+//		this.excludePatterns = excludePatterns;
+//		userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS, excludePatterns );
+//	}
+	
+	public void updateIncludeExcludeList( String type, Set<String> updatedList ) {
+		
+		if( type != null && includeDirs != null ) {
+			if( type.equals( GlobalConstants.MANAGE_INCLUDE_DIRS ) ) {
+				this.includeDirs = updatedList;
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, this.includeDirs );
+				
+			} else if( type.equals( GlobalConstants.MANAGE_INCLUDE_PATTERNS ) ) {
+				this.includePatterns = updatedList;
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS, this.includePatterns );
+				
+			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_DIRS ) ) {
+				this.excludeDirs = updatedList;
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, this.excludeDirs );
+				
+			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_PATTERNS ) ) {
+				this.excludePatterns = updatedList;
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS, this.excludePatterns );
+			}
+		}
 	}
 	
 }

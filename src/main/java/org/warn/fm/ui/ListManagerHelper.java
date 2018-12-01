@@ -25,17 +25,16 @@ public class ListManagerHelper {
 	public static final String ADD_ITEM_ACTION = "Add";
 	public static final String REMOVE_ITEM_ACTION = "Remove";
 	
-	public static final String MANAGE_INCLUDE_DIRS = "Manage Include Directories";
-	public static final String MANAGE_INCLUDE_PATTERNS = "Manage Include Patterns";
-	public static final String MANAGE_EXCLUDE_DIRS = "Manage Exclude Directories";
-	public static final String MANAGE_EXCLUDE_PATTERNS = "Manage Exclude Patterns";
+	private static final int MAIN_PANEL_WIDTH = 375;
+	private static final int MAIN_PANEL_HEIGHT = 375;
+	private static final int LIST_SCROLL_PANE_WIDTH = 360;
+	private static final int LIST_SCROLL_PANE_HEIGHT = 330;
+	private static final int ADD_ITEM_BTN_WIDTH = 75;
+	private static final int ADD_ITEM_BTN_HEIGHT = 25;
+	private static final int REMOVE_ITEM_BTN_WIDTH = 75;
+	private static final int REMOVE_ITEM_BTN_HEIGHT = 25;
 	
-	private static final int LIST_SCROLL_PANE_WIDTH = 330;
-	private static final int LIST_SCROLL_PANE_HEIGHT = 300;
-	private static final int MAIN_PANEL_WIDTH = 350;
-	private static final int MAIN_PANEL_HEIGHT = 350;
-	
-	public static JPanel createListPanel( Collection<String> listItems, BackupHelper backupHelper ) {
+	public static JPanel createListPanel( String actionType, Collection<String> listItems, BackupHelper backupHelper ) {
 		
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		for( String dir: listItems ) {
@@ -52,12 +51,17 @@ public class ListManagerHelper {
 		
 		JButton addItemBtn = new JButton(ADD_ITEM_ACTION);
 		addItemBtn.setEnabled(false);
-
+		addItemBtn.setPreferredSize( new Dimension( ADD_ITEM_BTN_WIDTH, ADD_ITEM_BTN_HEIGHT ) );
+		addItemBtn.setMinimumSize( new Dimension( ADD_ITEM_BTN_WIDTH, ADD_ITEM_BTN_HEIGHT ) );
+		
 		JButton removeItemBtn = new JButton(REMOVE_ITEM_ACTION);
+		removeItemBtn.setPreferredSize( new Dimension( REMOVE_ITEM_BTN_WIDTH, REMOVE_ITEM_BTN_HEIGHT ) );
+		removeItemBtn.setMinimumSize( new Dimension( REMOVE_ITEM_BTN_WIDTH, REMOVE_ITEM_BTN_HEIGHT ) );
+		
 		JTextField newItemTxt = new JTextField(25);
 		
 		ListManagerActionListener listManagerActionListener = 
-				new ListManagerActionListener( addItemBtn, removeItemBtn, newItemTxt, list, listModel, backupHelper );
+				new ListManagerActionListener( actionType, addItemBtn, removeItemBtn, newItemTxt, list, listModel, backupHelper );
 		list.addListSelectionListener(listManagerActionListener);
 		addItemBtn.addActionListener(listManagerActionListener);
 		removeItemBtn.addActionListener(listManagerActionListener);

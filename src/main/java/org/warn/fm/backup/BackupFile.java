@@ -66,6 +66,9 @@ public class BackupFile implements Comparable<BackupFile> {
 	}
 	
 	public String toString() {
+		if( this.path==null || this.path.getFileName()==null ) {
+			return null;
+		}
 		return this.path.getFileName().toString();
 	}
 
