@@ -13,6 +13,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.warn.fm.backup.BackupHelper;
+import org.warn.fm.ui.ListManagerHelper;
+
 public class ListManagerActionListener implements ActionListener, ListSelectionListener, DocumentListener {
 	
 	private boolean alreadyEnabled = false;
@@ -20,15 +23,17 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 	private JButton removeItemBtn;
 	private JTextField newItemTxt;
 	private JList<String> list;
-	DefaultListModel<String> listModel;
+	private DefaultListModel<String> listModel;
+	private BackupHelper backupHelper;
 	
 	public ListManagerActionListener( JButton addItemBtn, JButton removeItemBtn, JTextField newItemTxt, JList<String> list, 
-			DefaultListModel<String> listModel ) {
+			DefaultListModel<String> listModel, BackupHelper backupHelper ) {
 		this.addItemBtn = addItemBtn;
 		this.removeItemBtn = removeItemBtn;
 		this.newItemTxt = newItemTxt;
 		this.list = list;
 		this.listModel = listModel;
+		this.backupHelper = backupHelper;
 	}
 
 	//Required by ActionListener.
@@ -37,7 +42,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 		String command = e.getActionCommand();
 		switch(command) {
 			
-			case "Add":
+			case ListManagerHelper.ADD_ITEM_ACTION:
 				String name = newItemTxt.getText();
 		
 				//User didn't type in a unique name...
@@ -47,7 +52,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 					newItemTxt.selectAll();
 					return;
 				}
-		
+				
 				int index = list.getSelectedIndex(); //get selected index
 				if (index == -1) { //no selection, so insert at beginning
 					index = 0;
@@ -69,7 +74,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				
 				break;
 			
-			case "Remove":
+			case ListManagerHelper.REMOVE_ITEM_ACTION:
 				//This method can be called only if
 				//there's a valid selection
 				//so go ahead and remove whatever's selected.

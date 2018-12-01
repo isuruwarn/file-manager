@@ -31,14 +31,16 @@ public class BackupHelper {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger( BackupHelper.class );
 	
+	private UserConfig userConfig;
 	private Set<String> includeDirs;
 	private Set<String> excludeDirs;
 	private Set<String> includePatterns;
 	private Set<String> excludePatterns;
 	private Calendar lastBackupTime;
 	
-	public BackupHelper( UserConfig uc ) {
+	public BackupHelper( UserConfig userConfig ) {
 		
+		this.userConfig = userConfig;
 		this.includeDirs = new HashSet<String>();
 		
 		// add default paths
@@ -49,13 +51,13 @@ public class BackupHelper {
 		this.includeDirs.add( Paths.get( USER_HOME_DIR, DOWNLOADS ).toString() );
 		
 		// add any user defined paths from config file
-		addElements( uc.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ), this.includeDirs );
+		addElements( userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ), this.includeDirs );
 		this.includeDirs.add( Paths.get( USER_HOME_DIR, "dev" ).toString() );
 		this.includeDirs.add( Paths.get( USER_HOME_DIR, "OneDrive - SAP SE", "Documents" ).toString() );
 		
 		// add any user defined exclude paths from config file
 		this.excludeDirs = new HashSet<String>();
-		addElements( uc.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ), this.excludeDirs );
+		addElements( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ), this.excludeDirs );
 		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/android" ).toString() );
 		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-httpd" ).toString() );
 		this.excludeDirs.add( Paths.get( USER_HOME_DIR, "dev/apache-jmeter-4.0" ).toString() );
@@ -75,7 +77,7 @@ public class BackupHelper {
 		
 		// add any user defined exclude patterns from config file
 		this.excludePatterns = new HashSet<String>();
-		addElements( uc.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS ), this.excludePatterns );
+		addElements( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS ), this.excludePatterns );
 		this.excludePatterns.add(".metadata");
 		this.excludePatterns.add(".settings");
 		this.excludePatterns.add(".git");
@@ -86,16 +88,16 @@ public class BackupHelper {
 		
 		// add any user defined include patterns from config file
 		this.includePatterns = new HashSet<String>();
-		addElements( uc.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS ), this.includePatterns );
+		addElements( userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS ), this.includePatterns );
 		
 		// check for last backup timestamp in config file
-		String strLastBackupTime = uc.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
+		String strLastBackupTime = userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
 		if( strLastBackupTime != null && !strLastBackupTime.isEmpty() ) {
 			try {
 				SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
-				Date date = sdf. parse( strLastBackupTime );
-				Calendar cal = Calendar. getInstance();
-			    cal. setTime(date);
+				Date date = sdf.parse( strLastBackupTime );
+				this.lastBackupTime = Calendar.getInstance();
+				this.lastBackupTime.setTime(date);
 			} catch( ParseException e ) {
 				LOGGER.error( "Error while passing saved backup timestamp! Using default backup timestamp", e );
 				setDefaultBackupTimestamp();
@@ -132,6 +134,7 @@ public class BackupHelper {
 		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
 		
 		long endTime = System.currentTimeMillis();
+		userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_TIME, sdf.format( this.lastBackupTime.getTimeInMillis() ) );
 		LOGGER.info("Completed in " + (endTime - startTime) / 1000 + " second(s)..");
 		
 		return newOrModifiedFiles;
@@ -163,32 +166,36 @@ public class BackupHelper {
 		return includeDirs;
 	}
 
-	public void setIncludeDirs(Set<String> includeDirs) {
+	public void saveIncludeDirs(Set<String> includeDirs) {
 		this.includeDirs = includeDirs;
+		userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, includeDirs );
 	}
 
 	public Set<String> getExcludeDirs() {
 		return excludeDirs;
 	}
 
-	public void setExcludeDirs(Set<String> excludeDirs) {
+	public void saveExcludeDirs(Set<String> excludeDirs) {
 		this.excludeDirs = excludeDirs;
+		userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, excludeDirs );
 	}
 
 	public Set<String> getIncludePatterns() {
 		return includePatterns;
 	}
 
-	public void setIncludePatterns(Set<String> includePatterns) {
+	public void saveIncludePatterns(Set<String> includePatterns) {
 		this.includePatterns = includePatterns;
+		userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS, includePatterns );
 	}
 
 	public Set<String> getExcludePatterns() {
 		return excludePatterns;
 	}
 
-	public void setExcludePatterns(Set<String> excludePatterns) {
+	public void saveExcludePatterns(Set<String> excludePatterns) {
 		this.excludePatterns = excludePatterns;
+		userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS, excludePatterns );
 	}
 	
 }

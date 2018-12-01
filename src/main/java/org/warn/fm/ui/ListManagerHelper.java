@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 
+import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.listeners.ListManagerActionListener;
 
 public class ListManagerHelper {
@@ -34,7 +35,7 @@ public class ListManagerHelper {
 	private static final int MAIN_PANEL_WIDTH = 350;
 	private static final int MAIN_PANEL_HEIGHT = 350;
 	
-	public static JPanel createListPanel( Collection<String> listItems ) {
+	public static JPanel createListPanel( Collection<String> listItems, BackupHelper backupHelper ) {
 		
 		DefaultListModel<String> listModel = new DefaultListModel<String>();
 		for( String dir: listItems ) {
@@ -56,7 +57,7 @@ public class ListManagerHelper {
 		JTextField newItemTxt = new JTextField(25);
 		
 		ListManagerActionListener listManagerActionListener = 
-				new ListManagerActionListener( addItemBtn, removeItemBtn, newItemTxt, list, listModel );
+				new ListManagerActionListener( addItemBtn, removeItemBtn, newItemTxt, list, listModel, backupHelper );
 		list.addListSelectionListener(listManagerActionListener);
 		addItemBtn.addActionListener(listManagerActionListener);
 		removeItemBtn.addActionListener(listManagerActionListener);
