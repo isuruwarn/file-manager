@@ -231,6 +231,8 @@ public class UIContainer {
 		manageExcludePatterns.addActionListener(mainActionListener);
 		backupLocBrowseBtn.addActionListener(mainActionListener);
 		backupBtn.addActionListener(mainActionListener);
+		
+		manageIncludeDirs.doClick();
 	}
 	
 }

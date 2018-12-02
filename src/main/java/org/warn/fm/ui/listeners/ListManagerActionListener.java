@@ -1,6 +1,8 @@
 package org.warn.fm.ui.listeners;
 
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
@@ -18,7 +20,11 @@ import javax.swing.event.ListSelectionListener;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.ListManagerHelper;
 
-// https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
+/** 
+ * Based on:
+ *   https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
+ * 
+ */
 public class ListManagerActionListener implements ActionListener, ListSelectionListener, DocumentListener {
 	
 	private boolean alreadyEnabled = false;
@@ -105,6 +111,12 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
 				
 				break;
+			
+			case ListManagerHelper.COPY_ITEM_ACTION:
+				String value = this.jList.getSelectedValue();
+				StringSelection stringSelection = new StringSelection(value);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(stringSelection, null);
 		}
 	}
 	

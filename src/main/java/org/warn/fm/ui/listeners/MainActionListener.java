@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Set;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -105,22 +106,22 @@ public class MainActionListener implements ActionListener {
 			
 			case UIContainer.MANAGE_INCLUDE_DIRS_ACTION:
 				JPanel includeDirsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_INCLUDE_DIRS, this.backupHelper.getIncludeDirs(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, includeDirsListPanel, GlobalConstants.MANAGE_INCLUDE_DIRS, JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, includeDirsListPanel, GlobalConstants.MANAGE_INCLUDE_DIRS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
 			case UIContainer.MANAGE_INCLUDE_PATTERNS_ACTION:
 				JPanel includePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_INCLUDE_PATTERNS, this.backupHelper.getIncludePatterns(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, GlobalConstants.MANAGE_INCLUDE_PATTERNS, JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, GlobalConstants.MANAGE_INCLUDE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
 			case UIContainer.MANAGE_EXCLUDE_DIRS_ACTION:
 				JPanel excludeDirsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_DIRS, this.backupHelper.getExcludeDirs(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, excludeDirsListPanel, GlobalConstants.MANAGE_EXCLUDE_DIRS, JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, excludeDirsListPanel, GlobalConstants.MANAGE_EXCLUDE_DIRS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
 			case UIContainer.MANAGE_EXCLUDE_PATTERNS_ACTION:
 				JPanel excludePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_PATTERNS, this.backupHelper.getExcludePatterns(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, excludePatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_PATTERNS, JOptionPane.NO_OPTION );
+				JOptionPane.showMessageDialog( mainFrane, excludePatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
 		}
