@@ -3,7 +3,9 @@ package org.warn.fm.ui.listeners;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Set;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -19,8 +21,8 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.warn.fm.backup.BackupFile;
 import org.warn.fm.backup.BackupHelper;
+import org.warn.fm.backup.BackupScanResult;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListManagerHelper;
 import org.warn.fm.ui.UIContainer;
@@ -32,18 +34,23 @@ public class MainActionListener implements ActionListener {
 	
 	private BackupHelper backupHelper;
 	private JFrame mainFrane;
-	private JTree fileTree;
+	private JTextField scanFromDateTxt;
 	private JTextField backupLocationTxt;
 	private JButton backupBtn;
+	private JTree fileTree;
+	private JLabel resultsLbl;
 	private JLabel statusLbl;
 	private FileTreeHelper fileTreeHelper;
 	
-	public MainActionListener( BackupHelper backupHelper, JFrame mainFrame, JTree fileTree, JTextField backupLocationTxt, JButton backupBtn,  JLabel statusLbl ) {
+	public MainActionListener( BackupHelper backupHelper, JFrame mainFrame, JTextField scanFromDateTxt, JTextField backupLocationTxt, 
+			JButton backupBtn, JTree fileTree, JLabel resultsLbl,  JLabel statusLbl ) {
 		this.backupHelper = backupHelper;
 		this.mainFrane = mainFrame;
-		this.fileTree = fileTree;
+		this.scanFromDateTxt = scanFromDateTxt;
 		this.backupLocationTxt = backupLocationTxt;
 		this.backupBtn = backupBtn;
+		this.fileTree = fileTree;
+		this.resultsLbl = resultsLbl;
 		this.statusLbl = statusLbl;
 		this.fileTreeHelper = new FileTreeHelper();
 	}
@@ -56,20 +63,30 @@ public class MainActionListener implements ActionListener {
 			
 			case UIContainer.SCAN_BTN_ACTION:
 				LOGGER.debug("Starting scan..");
+				SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
+				Calendar scanFromDate = Calendar.getInstance();
+				try {
+					scanFromDate.setTime( sdf.parse( scanFromDateTxt.getText() ) );
+				} catch (ParseException ex) {
+					LOGGER.error("Error while parsing Scan From Date", e);
+					JOptionPane.showMessageDialog( mainFrane, GlobalConstants.ERR_MSG_INVALID_SCAN_FROM_DATE, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
+					break;
+				}
 				this.statusLbl.setText("Scanning directories for new or modified files ...");
 				SwingUtilities.invokeLater( new Runnable() {
 					public void run() {
-						long startTime = System.currentTimeMillis();
-						Set<BackupFile> newOrModifiedFiles = backupHelper.scanForFileChanges();
-						long endTime = System.currentTimeMillis();
-						long duration = (endTime - startTime) / 1000;
-						LOGGER.debug("Scan completed in " + duration + " second(s)");
-						statusLbl.setText("Scan completed in " + duration + " second(s)");
-						if( newOrModifiedFiles != null && newOrModifiedFiles.size() > 0 ) {
+						fileTreeHelper.clearTree(fileTree);
+						fileTree.setRootVisible(false);
+						BackupScanResult scanResult = backupHelper.scanForFileChanges( scanFromDate );
+						resultsLbl.setText( "<html>" +
+								"Total Files scanned: " + scanResult.getTotalFileCount() + "<br>" + 
+								"New or Modified Files: " + scanResult.getNewOrModifiedFileCount() +
+								"</html>" );
+						statusLbl.setText("Scan completed in " + scanResult.getDuration() + " second(s)");
+						if( scanResult.getNewOrModifiedFileCount() > 0 ) {
 							backupBtn.setEnabled(true);
-							fileTreeHelper.clearTree(fileTree);
 							fileTree.setRootVisible(true);
-							DefaultTreeModel treeModel = new DefaultTreeModel( fileTreeHelper.addNodes( newOrModifiedFiles ) );
+							DefaultTreeModel treeModel = new DefaultTreeModel( fileTreeHelper.addNodes( scanResult.getNewOrModifiedFiles() ) );
 							fileTree.setModel(treeModel);
 							for( int i = 0; i < fileTree.getRowCount(); i++ ) {
 								fileTree.expandRow(i);
@@ -109,9 +126,9 @@ public class MainActionListener implements ActionListener {
 				JOptionPane.showMessageDialog( mainFrane, includeDirsListPanel, GlobalConstants.MANAGE_INCLUDE_DIRS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
-			case UIContainer.MANAGE_INCLUDE_PATTERNS_ACTION:
-				JPanel includePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_INCLUDE_PATTERNS, this.backupHelper.getIncludePatterns(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, GlobalConstants.MANAGE_INCLUDE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
+			case UIContainer.MANAGE_INCLUDE_FILE_PATTERNS_ACTION:
+				JPanel includePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_INCLUDE_FILE_PATTERNS, this.backupHelper.getIncludeFilePatterns(), this.backupHelper );
+				JOptionPane.showMessageDialog( mainFrane, includePatternsListPanel, GlobalConstants.MANAGE_INCLUDE_FILE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
 			case UIContainer.MANAGE_EXCLUDE_DIRS_ACTION:
@@ -119,9 +136,14 @@ public class MainActionListener implements ActionListener {
 				JOptionPane.showMessageDialog( mainFrane, excludeDirsListPanel, GlobalConstants.MANAGE_EXCLUDE_DIRS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
-			case UIContainer.MANAGE_EXCLUDE_PATTERNS_ACTION:
-				JPanel excludePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_PATTERNS, this.backupHelper.getExcludePatterns(), this.backupHelper );
-				JOptionPane.showMessageDialog( mainFrane, excludePatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
+			case UIContainer.MANAGE_EXCLUDE_DIR_PATTERNS_ACTION:
+				JPanel excludeDirPatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_DIR_PATTERNS, this.backupHelper.getExcludeDirPatterns(), this.backupHelper );
+				JOptionPane.showMessageDialog( mainFrane, excludeDirPatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_DIR_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
+				break;
+			
+			case UIContainer.MANAGE_EXCLUDE_FILE_PATTERNS_ACTION:
+				JPanel excludeFilePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, this.backupHelper.getExcludeFilePatterns(), this.backupHelper );
+				JOptionPane.showMessageDialog( mainFrane, excludeFilePatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
 				break;
 			
 		}

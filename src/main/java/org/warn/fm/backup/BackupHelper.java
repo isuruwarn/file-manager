@@ -32,9 +32,10 @@ public class BackupHelper {
 	
 	private UserConfig userConfig;
 	private Set<String> includeDirs;
+	private Set<String> includeFilePatterns;
 	private Set<String> excludeDirs;
-	private Set<String> includePatterns;
-	private Set<String> excludePatterns;
+	private Set<String> excludeDirPatterns;
+	private Set<String> excludeFilePatterns;
 	private Calendar lastBackupTime;
 	
 	public BackupHelper( UserConfig userConfig ) {
@@ -44,22 +45,18 @@ public class BackupHelper {
 		// add any user defined paths from config file
 		this.includeDirs = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ) );
 		
-		// add default include paths
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, DOCUMENTS ).toString() );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, PICTURES ).toString() );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, MUSIC ).toString() );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, VIDEOS ).toString() );
-		this.includeDirs.add( Paths.get( USER_HOME_DIR, DOWNLOADS ).toString() );
+		// add any user defined include patterns from config file
+		this.includeFilePatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS ) );
 		
 		// add any user defined exclude paths from config file
 		this.excludeDirs = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ) );
 		
-		// add any user defined include patterns from config file
-		this.includePatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS ) );
+		// add any user defined exclude patterns from config file
+		this.excludeDirPatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS ) );
 		
 		// add any user defined exclude patterns from config file
-		this.excludePatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS ) );
-		
+		this.excludeFilePatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS ) );
+				
 		// check for last backup timestamp in config file
 		String strLastBackupTime = userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
 		if( strLastBackupTime != null && !strLastBackupTime.isEmpty() ) {
@@ -79,14 +76,15 @@ public class BackupHelper {
 	}
 	
 	
-	public Set<BackupFile> scanForFileChanges() {
+	public BackupScanResult scanForFileChanges( Calendar scanFromDate ) {
 		
 		long startTime = System.currentTimeMillis();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
-		LOGGER.info("Last Backup Time - " + sdf.format( this.lastBackupTime.getTimeInMillis() ) );
+		LOGGER.info("Scanning files created or modifiled after " + sdf.format( scanFromDate.getTimeInMillis() ) );
 		
-		BackupScanner scanner = new BackupScanner( this.lastBackupTime, this.excludeDirs, this.excludePatterns );
+		BackupScanner scanner = new BackupScanner( scanFromDate, this.includeFilePatterns, 
+				this.excludeDirs, this.excludeDirPatterns, this.excludeFilePatterns );
 		EnumSet<FileVisitOption> opts = EnumSet.of(FileVisitOption.FOLLOW_LINKS);
 		try {
 			for( String dir: this.includeDirs ) {
@@ -95,23 +93,21 @@ public class BackupHelper {
 		} catch (IOException e) {
 			LOGGER.error("Error while scanning for file changes", e);
 		}
-		
 		Set<BackupFile> newOrModifiedFiles = scanner.getNewOrModifiedFiles();
-		newOrModifiedFiles.stream().forEach( f -> {
-			LOGGER.debug( f.toString() );
-		});
-		LOGGER.info("Total Files - " + scanner.getTotalFileCount() );
-		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
+		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, sdf.format( System.currentTimeMillis() ) );
 		
 		long endTime = System.currentTimeMillis();
-		userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_TIME, sdf.format( this.lastBackupTime.getTimeInMillis() ) );
-		LOGGER.info("Completed in " + (endTime - startTime) / 1000 + " second(s)..");
+		double duration = (endTime - startTime) / 1000;
+		LOGGER.info("Total Files - " + scanner.getTotalFileCount() );
+		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
+		LOGGER.info("Completed in " + duration + " second(s)..");
 		
-		return newOrModifiedFiles;
+		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, scanner.getTotalFileCount().get(), duration );
+		return scanResult;
 	}
 	
 	public String getlastBackupTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.SCAN_FROM_TS_FORMAT );
+		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 		return sdf.format( this.lastBackupTime.getTimeInMillis() );
 	}
 	
@@ -127,37 +123,45 @@ public class BackupHelper {
 	public Set<String> getIncludeDirs() {
 		return includeDirs;
 	}
+	
+	public Set<String> getIncludeFilePatterns() {
+		return includeFilePatterns;
+	}
 
 	public Set<String> getExcludeDirs() {
 		return excludeDirs;
 	}
 
-	public Set<String> getIncludePatterns() {
-		return includePatterns;
+	public Set<String> getExcludeDirPatterns() {
+		return excludeDirPatterns;
 	}
-
-	public Set<String> getExcludePatterns() {
-		return excludePatterns;
+	
+	public Set<String> getExcludeFilePatterns() {
+		return excludeFilePatterns;
 	}
 	
 	public void updateIncludeExcludeList( String type, Set<String> updatedList ) {
 		
-		if( type != null && includeDirs != null ) {
+		if( type != null && updatedList != null ) {
 			if( type.equals( GlobalConstants.MANAGE_INCLUDE_DIRS ) ) {
 				this.includeDirs = updatedList;
 				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, this.includeDirs );
 				
-			} else if( type.equals( GlobalConstants.MANAGE_INCLUDE_PATTERNS ) ) {
-				this.includePatterns = updatedList;
-				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_PATTERNS, this.includePatterns );
+			} else if( type.equals( GlobalConstants.MANAGE_INCLUDE_FILE_PATTERNS ) ) {
+				this.includeFilePatterns = updatedList;
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS, this.includeFilePatterns );
 				
 			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_DIRS ) ) {
 				this.excludeDirs = updatedList;
 				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, this.excludeDirs );
 				
-			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_PATTERNS ) ) {
-				this.excludePatterns = updatedList;
-				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_PATTERNS, this.excludePatterns );
+			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_DIR_PATTERNS ) ) {
+				this.excludeDirPatterns = updatedList;
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS, this.excludeDirPatterns );
+			
+			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS ) ) {
+				this.excludeFilePatterns = updatedList;
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS, this.excludeFilePatterns );
 			}
 		}
 	}

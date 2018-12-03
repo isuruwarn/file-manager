@@ -23,36 +23,61 @@ public class BackupScanner implements FileVisitor<Path> {
 	private static final Logger LOGGER = LoggerFactory.getLogger( BackupScanner.class );
 	
 	private AtomicInteger totalFileCount;
-	private Calendar lastBackupTime;
+	private Calendar scanFromDate;
+	private Set<String> includeFilePatterns;
 	private Set<String> excludeDirs;
+	private Set<String> excludeDirPatterns;
+	private Set<String> excludeFilePatterns;
 	private Set<BackupFile> newOrModifiedFiles;
-	private Set<String> excludePatterns;
 	
-	public BackupScanner( Calendar lastBackupTime, Set<String> excludeDirs, Set<String> excludePatterns ) {
-		this.lastBackupTime = lastBackupTime;
+	public BackupScanner( Calendar scanFromDate, Set<String> includeFilePatterns, 
+			Set<String> excludeDirs, Set<String> excludeDirPatterns, Set<String> excludeFilePatterns ) {
+		this.scanFromDate = scanFromDate;
+		this.includeFilePatterns = includeFilePatterns;
 		this.excludeDirs = excludeDirs;
-		this.excludePatterns = excludePatterns;
+		this.excludeDirPatterns = excludeDirPatterns;
+		this.excludeFilePatterns = excludeFilePatterns;
 		this.totalFileCount = new AtomicInteger(0);
 		this.newOrModifiedFiles = new TreeSet<BackupFile>();
 	}
 
 	public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
 		String dirName = dir.getName( dir.getNameCount()-1 ).toString();
-		if( this.excludeDirs.contains( dir.toString() ) || this.excludePatterns.contains( dirName ) ) {
+		if( this.excludeDirs.contains( dir.toString() ) || this.excludeDirPatterns.contains( dirName ) ) {
 			return SKIP_SUBTREE;
 		}
 		return CONTINUE;
 	}
 
 	public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+		
+		String fileName = file.getFileName().toString();
 		totalFileCount.incrementAndGet();
+		
+//		if( fileName.contains(".js") ) {
+//			LOGGER.debug(fileName);
+//		}
+ 		
+		// TODO FIX - run contains on each string in collection
+		if( this.includeFilePatterns.size() > 0 && !this.includeFilePatterns.contains( fileName ) ) {
+			return CONTINUE;
+		}
+		
+		// TODO FIX - run contains on each string in collection
+		if( this.excludeFilePatterns.contains( fileName ) ) {
+			return CONTINUE;
+		}
+		
 		FileTime createdTime = attrs.creationTime();
 		FileTime modifiedTime = attrs.lastModifiedTime();
-		if( createdTime!=null && createdTime.toMillis() >= this.lastBackupTime.getTimeInMillis() ) {
+		
+		if( createdTime!=null && createdTime.toMillis() >= this.scanFromDate.getTimeInMillis() ) {
 			newOrModifiedFiles.add( new BackupFile( file, DeltaType.NEW, createdTime, modifiedTime ) );
-		} else if( modifiedTime!=null && modifiedTime.toMillis() >= this.lastBackupTime.getTimeInMillis() ) {
+			
+		} else if( modifiedTime!=null && modifiedTime.toMillis() >= this.scanFromDate.getTimeInMillis() ) {
 			newOrModifiedFiles.add( new BackupFile( file, DeltaType.MODIFIED, createdTime, modifiedTime ) );
 		}
+		
 		return CONTINUE;
 	}
 
