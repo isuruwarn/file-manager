@@ -32,6 +32,7 @@ public class BackupScanner implements FileVisitor<Path> {
 	
 	public BackupScanner( Calendar scanFromDate, Set<String> includeFilePatterns, 
 			Set<String> excludeDirs, Set<String> excludeDirPatterns, Set<String> excludeFilePatterns ) {
+		// TODO input validation
 		this.scanFromDate = scanFromDate;
 		this.includeFilePatterns = includeFilePatterns;
 		this.excludeDirs = excludeDirs;
@@ -54,23 +55,28 @@ public class BackupScanner implements FileVisitor<Path> {
 		String fileName = file.getFileName().toString();
 		totalFileCount.incrementAndGet();
 		
-//		if( fileName.contains(".js") ) {
-//			LOGGER.debug(fileName);
-//		}
- 		
-		// TODO FIX - run contains on each string in collection
-		if( this.includeFilePatterns.size() > 0 && !this.includeFilePatterns.contains( fileName ) ) {
-			return CONTINUE;
-		}
-		
-		// TODO FIX - run contains on each string in collection
-		if( this.excludeFilePatterns.contains( fileName ) ) {
-			return CONTINUE;
+		// IF even one include file pattern has been defined, then exclude all other file patterns.
+		// ELSE consider all file patterns that do not match exclude file patterns
+		if( this.includeFilePatterns.size() > 0 ) {
+			boolean matchFound = false;
+			for( String filePattern: this.includeFilePatterns ) {
+				if( fileName.contains( filePattern ) ) {
+					matchFound = true;
+				}
+				if( !matchFound ) {
+					return CONTINUE;
+				}
+			}
+		} else {
+			for( String filePattern: this.excludeFilePatterns ) {
+				if( fileName.contains( filePattern ) ) {
+					return CONTINUE;
+				}
+			}
 		}
 		
 		FileTime createdTime = attrs.creationTime();
 		FileTime modifiedTime = attrs.lastModifiedTime();
-		
 		if( createdTime!=null && createdTime.toMillis() >= this.scanFromDate.getTimeInMillis() ) {
 			newOrModifiedFiles.add( new BackupFile( file, DeltaType.NEW, createdTime, modifiedTime ) );
 			

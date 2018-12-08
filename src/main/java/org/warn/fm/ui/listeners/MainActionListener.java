@@ -63,6 +63,8 @@ public class MainActionListener implements ActionListener {
 			
 			case UIContainer.SCAN_BTN_ACTION:
 				LOGGER.debug("Starting scan..");
+				fileTreeHelper.clearTree(fileTree);
+				fileTree.setRootVisible(false);
 				SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 				Calendar scanFromDate = Calendar.getInstance();
 				try {
@@ -75,8 +77,6 @@ public class MainActionListener implements ActionListener {
 				this.statusLbl.setText("Scanning directories for new or modified files ...");
 				SwingUtilities.invokeLater( new Runnable() {
 					public void run() {
-						fileTreeHelper.clearTree(fileTree);
-						fileTree.setRootVisible(false);
 						BackupScanResult scanResult = backupHelper.scanForFileChanges( scanFromDate );
 						resultsLbl.setText( "<html>" +
 								"Total Files scanned: " + scanResult.getTotalFileCount() + "<br>" + 
