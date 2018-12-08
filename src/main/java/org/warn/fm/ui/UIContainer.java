@@ -1,12 +1,10 @@
 package org.warn.fm.ui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,19 +42,19 @@ public class UIContainer {
 	public static final String SCAN_AND_BACKUP_BTN_ACTION = "Scan and Backup";
 	public static final String BROWSE_BTN_ACTION = "...";
 	
-	private static final int FRAME_WIDTH = 600;
+	private static final int FRAME_WIDTH = 650;
 	private static final int FRAME_HEIGHT = 775;
 	private static final int SETTINGS_BTN_WIDTH = 30;
 	private static final int SETTINGS_BTN_HEIGHT = 25;
-	private static final int SCAN_FROM_LBL_WIDTH = 80;
+	private static final int SCAN_FROM_LBL_WIDTH = 110;
 	private static final int SCAN_FROM_LBL_HEIGHT = 25;
-	private static final int SCAN_FROM_TXT_WIDTH = 120;
+	private static final int SCAN_FROM_TXT_WIDTH = 175;
 	private static final int SCAN_FROM_TXT_HEIGHT = 25;
 	private static final int SCAN_BTN_WIDTH = 100;
 	private static final int SCAN_BTN_HEIGHT = 25;
 	private static final int FILE_TREE_WIDTH = 575;
 	private static final int FILE_TREE_HEIGHT = 550;
-	private static final int TARGET_LOCATION_LBL_WIDTH = 80;
+	private static final int TARGET_LOCATION_LBL_WIDTH = 110;
 	private static final int TARGET_LOCATION_LBL_HEIGHT = 25;
 	private static final int TARGET_LOCATION_TXT_WIDTH = 275;
 	private static final int TARGET_LOCATION_TXT_HEIGHT = 25;
@@ -91,7 +89,7 @@ public class UIContainer {
 		fileTree.addTreeSelectionListener(treeListener);
 		JScrollPane fileTreeScrollPane = new JScrollPane(fileTree);
 		fileTreeScrollPane.setMinimumSize( new Dimension( FILE_TREE_WIDTH, FILE_TREE_HEIGHT ) );
-		fileTreeScrollPane.setBorder( BorderFactory.createLineBorder(Color.black) );
+		fileTreeScrollPane.setPreferredSize( new Dimension( FILE_TREE_WIDTH, FILE_TREE_HEIGHT ) );
 		
 		JLabel backupLocationLbl = new JLabel(BACKUP_LOCATION_LBL);
 		backupLocationLbl.setPreferredSize( new Dimension( TARGET_LOCATION_LBL_WIDTH, TARGET_LOCATION_LBL_HEIGHT ) );

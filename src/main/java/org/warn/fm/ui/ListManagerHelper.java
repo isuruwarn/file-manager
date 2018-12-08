@@ -26,14 +26,17 @@ import org.warn.fm.ui.listeners.ListManagerActionListener;
 
 public class ListManagerHelper {
 	
+	public static final String BROWSE_ACTION = "...";
 	public static final String ADD_ITEM_ACTION = "Add";
 	public static final String REMOVE_ITEM_ACTION = "Remove";
 	public static final String COPY_ITEM_ACTION = "Copy";
 	
-	private static final int MAIN_PANEL_WIDTH = 430;
+	private static final int MAIN_PANEL_WIDTH = 500;//430;
 	private static final int MAIN_PANEL_HEIGHT = 400;
 	private static final int LIST_SCROLL_PANE_WIDTH = 400;
 	private static final int LIST_SCROLL_PANE_HEIGHT = 350;
+	private static final int BROWSE_BTN_WIDTH = 25;
+	private static final int BROWSE_BTN_HEIGHT = 25;
 	private static final int ADD_ITEM_BTN_WIDTH = 75;
 	private static final int ADD_ITEM_BTN_HEIGHT = 25;
 	private static final int REMOVE_ITEM_BTN_WIDTH = 75;
@@ -53,6 +56,10 @@ public class ListManagerHelper {
 		JScrollPane listScrollPane = new JScrollPane(jList);
 		listScrollPane.setPreferredSize( new Dimension( LIST_SCROLL_PANE_WIDTH, LIST_SCROLL_PANE_HEIGHT ) );
 		listScrollPane.setMinimumSize( new Dimension( LIST_SCROLL_PANE_WIDTH, LIST_SCROLL_PANE_HEIGHT ) );
+		
+		JButton browseBtn = new JButton(BROWSE_ACTION);
+		browseBtn.setPreferredSize( new Dimension( BROWSE_BTN_WIDTH, BROWSE_BTN_HEIGHT ) );
+		browseBtn.setMinimumSize( new Dimension( BROWSE_BTN_WIDTH, BROWSE_BTN_HEIGHT ) );
 		
 		JButton addItemBtn = new JButton(ADD_ITEM_ACTION);
 		addItemBtn.setEnabled(false);
@@ -75,6 +82,7 @@ public class ListManagerHelper {
 		ListManagerActionListener listManagerActionListener = 
 				new ListManagerActionListener( actionType, addItemBtn, removeItemBtn, newItemTxt, jList, listModel, backupHelper );
 		jList.addListSelectionListener(listManagerActionListener);
+		browseBtn.addActionListener(listManagerActionListener);
 		addItemBtn.addActionListener(listManagerActionListener);
 		removeItemBtn.addActionListener(listManagerActionListener);
 		newItemTxt.getDocument().addDocumentListener(listManagerActionListener);
@@ -86,6 +94,7 @@ public class ListManagerHelper {
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
 		buttonPane.add(newItemTxt);
+		buttonPane.add(browseBtn);
 		buttonPane.add(addItemBtn);
 		buttonPane.add(Box.createHorizontalStrut(5));
 		buttonPane.add(new JSeparator(SwingConstants.VERTICAL));

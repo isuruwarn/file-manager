@@ -5,11 +5,13 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
@@ -53,6 +55,16 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 		String command = e.getActionCommand();
 		switch(command) {
 			
+			case ListManagerHelper.BROWSE_ACTION:
+				JFileChooser fc = new JFileChooser();
+				fc.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
+				int returnVal = fc.showOpenDialog(null);
+				if( returnVal == JFileChooser.APPROVE_OPTION ) {
+					File file = fc.getSelectedFile();
+					newItemTxt.setText( file.getPath() );
+				}
+				break;
+				
 			case ListManagerHelper.ADD_ITEM_ACTION:
 				String name = this.newItemTxt.getText();
 		

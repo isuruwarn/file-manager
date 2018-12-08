@@ -21,17 +21,20 @@ public class FileManagerApp {
 		final BackupHelper bh = new BackupHelper(uc);
 		//bh.scanForFileChanges();
 		
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-			
-		} catch (ClassNotFoundException e) {
-			LOGGER.error("Error while loading UI Manager", e);
-		} catch (InstantiationException e) {
-			LOGGER.error("Error while loading UI Manager", e);
-		} catch (IllegalAccessException e) {
-			LOGGER.error("Error while loading UI Manager", e);
-		} catch (UnsupportedLookAndFeelException e) {
-			LOGGER.error("Error while loading UI Manager", e);
+		String osName = System.getProperty("os.name");
+		if( osName.contains("windows") ) {
+			try {
+				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+				
+			} catch (ClassNotFoundException e) {
+				LOGGER.error("Error while loading UI Manager", e);
+			} catch (InstantiationException e) {
+				LOGGER.error("Error while loading UI Manager", e);
+			} catch (IllegalAccessException e) {
+				LOGGER.error("Error while loading UI Manager", e);
+			} catch (UnsupportedLookAndFeelException e) {
+				LOGGER.error("Error while loading UI Manager", e);
+			}
 		}
 		
 		SwingUtilities.invokeLater( new Runnable() {
