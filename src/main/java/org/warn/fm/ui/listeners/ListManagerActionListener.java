@@ -19,6 +19,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.ListManagerHelper;
+import org.warn.fm.ui.UIContainer;
 import org.warn.utils.swing.UICommons;
 
 /** 
@@ -55,7 +56,12 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 		switch(command) {
 			
 			case ListManagerHelper.BROWSE_ACTION:
-				UICommons.chooseDirectory( newItemTxt );
+				if( this.actionType.equals( UIContainer.MANAGE_INCLUDE_DIRS_ACTION ) || this.actionType.equals( UIContainer.MANAGE_EXCLUDE_DIRS_ACTION )
+						|| this.actionType.equals( UIContainer.MANAGE_EXCLUDE_DIR_PATTERNS_ACTION ) ) {
+					UICommons.chooseDirectory( newItemTxt );
+				} else {
+					UICommons.chooseFile( newItemTxt );
+				}
 				break;
 				
 			case ListManagerHelper.ADD_ITEM_ACTION:
@@ -76,7 +82,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 					index++;
 				}
 		
-				this.listModel.insertElementAt( this.newItemTxt.getText(), index );
+				this.listModel.insertElementAt( name, index );
 				//If we just wanted to add to the end, we'd do this:
 				//listModel.addElement(newItemTxt.getText());
 		
@@ -88,7 +94,8 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				this.jList.setSelectedIndex(index);
 				this.jList.ensureIndexIsVisible(index);
 				
-				this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
+				//this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
+				this.backupHelper.addToIncludeExcludeList( this.actionType, name );
 				
 				break;
 			
@@ -96,6 +103,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				//This method can be called only if
 				//there's a valid selection
 				//so go ahead and remove whatever's selected.
+				name = this.jList.getSelectedValue();
 				int index2 = this.jList.getSelectedIndex();
 				this.listModel.remove(index2);
 
@@ -114,6 +122,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				}
 				
 				this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
+				//this.backupHelper.addToIncludeExcludeList( this.actionType, name );
 				
 				break;
 			

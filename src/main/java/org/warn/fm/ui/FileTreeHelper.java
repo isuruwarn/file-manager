@@ -70,5 +70,16 @@ public class FileTreeHelper {
 		}
 		return obj;
 	}
-
+	
+	public static String getSelectedPath( JTree fileTree ) {
+		String strNewListItem = null;
+		Object obj = getSelectedUserObject( fileTree );
+		if( obj instanceof BackupFile ) { // file node
+			BackupFile backupFile = (BackupFile) obj;
+			strNewListItem = backupFile.getPath().toString();
+		} else {
+			strNewListItem = (String) obj;
+		}
+		return strNewListItem;
+	}
 }

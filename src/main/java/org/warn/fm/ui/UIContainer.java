@@ -22,7 +22,6 @@ import javax.swing.tree.TreeSelectionModel;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.config.ConfigConstants;
 import org.warn.fm.ui.listeners.FileTreeMouseAdapter;
-import org.warn.fm.ui.listeners.FileTreeSelectionListener;
 import org.warn.fm.ui.listeners.MainActionListener;
 import org.warn.utils.config.UserConfig;
 
@@ -243,7 +242,7 @@ public class UIContainer {
 		mainFrame.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		mainFrame.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		mainFrame.getContentPane().add(panel);
-		mainFrame.setResizable(false);
+		//mainFrame.setResizable(false);
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null); // position to center of screen 
 		mainFrame.setVisible(true);

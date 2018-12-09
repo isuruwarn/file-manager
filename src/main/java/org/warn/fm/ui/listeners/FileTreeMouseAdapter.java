@@ -5,10 +5,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import org.warn.fm.backup.BackupFile;
+import org.warn.fm.ui.FileTreeHelper;
 
 public class FileTreeMouseAdapter extends MouseAdapter {
 	
@@ -31,15 +30,11 @@ public class FileTreeMouseAdapter extends MouseAdapter {
 	private void showPopup(MouseEvent e) {
 		if( e.isPopupTrigger() ) {
 			JTree fileTree = (JTree) e.getComponent();
-			TreePath selectionPath = fileTree.getSelectionPath();
-			if( selectionPath != null ) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
-				Object obj = node.getUserObject();
-				if( obj instanceof BackupFile ) { // file node
-					this.addToFilesPopupMenu.show( fileTree, e.getX(), e.getY() );
-				} else {
-					this.addToDirsPopupMenu.show( fileTree, e.getX(), e.getY() );
-				}
+			Object obj = FileTreeHelper.getSelectedUserObject(fileTree);
+			if( obj instanceof BackupFile ) { // file node
+				this.addToFilesPopupMenu.show( fileTree, e.getX(), e.getY() );
+			} else {
+				this.addToDirsPopupMenu.show( fileTree, e.getX(), e.getY() );
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package org.warn.fm.backup;
 import java.io.IOException;
 import java.nio.file.FileVisitOption;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -169,25 +170,58 @@ public class BackupHelper {
 	public void addToIncludeExcludeList( String type, String item ) {
 		
 		if( type != null && item != null ) {
+			
 			if( type.equals( GlobalConstants.MANAGE_INCLUDE_DIRS ) ) {
+				
 				this.includeDirs.add(item);
 				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, this.includeDirs );
 				
+				if( this.excludeDirs.contains(item) ) {
+					this.excludeDirs.remove(item);
+					this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, this.excludeDirs );
+				}
+				
 			} else if( type.equals( GlobalConstants.MANAGE_INCLUDE_FILE_PATTERNS ) ) {
-				this.includeFilePatterns.add(item);
+				
+				Path p = Paths.get(item);
+				String fileName = p.getFileName().toString();
+				String fileExtension = fileName.substring( fileName.indexOf(".") );
+				this.includeFilePatterns.add( fileExtension );
 				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS, this.includeFilePatterns );
 				
+				if( this.excludeFilePatterns.contains(fileExtension) ) {
+					this.excludeFilePatterns.remove(fileExtension);
+					this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS, this.excludeFilePatterns );
+				}
+				
 			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_DIRS ) ) {
+				
 				this.excludeDirs.add(item);
 				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, this.excludeDirs );
 				
+				if( this.includeDirs.contains(item) ) {
+					this.includeDirs.remove(item);
+					this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, this.includeDirs );
+				}
+				
 			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_DIR_PATTERNS ) ) {
-				this.excludeDirPatterns.add(item);
+				
+				Path p = Paths.get(item);
+				this.excludeDirPatterns.add( p.getFileName().toString() );
 				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS, this.excludeDirPatterns );
 			
 			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS ) ) {
-				this.excludeFilePatterns.add(item);
+				
+				Path p = Paths.get(item);
+				String fileName = p.getFileName().toString();
+				String fileExtension = fileName.substring( fileName.indexOf(".") );
+				this.excludeFilePatterns.add( fileExtension );
 				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS, this.excludeFilePatterns );
+				
+				if( this.includeFilePatterns.contains(fileExtension) ) {
+					this.includeFilePatterns.remove(fileExtension);
+					this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS, this.includeFilePatterns );
+				}
 			}
 		}
 	}

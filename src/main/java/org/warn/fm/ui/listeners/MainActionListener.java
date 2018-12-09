@@ -15,13 +15,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.warn.fm.backup.BackupFile;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.backup.BackupScanResult;
 import org.warn.fm.ui.FileTreeHelper;
@@ -143,22 +140,36 @@ public class MainActionListener implements ActionListener {
 				break;
 			
 			case UIContainer.ADD_TO_INCLUDE_FILE_PATTERNS_ACTION:
-				TreePath selectionPath = this.fileTree.getSelectionPath();
-				if( selectionPath != null ) {
-					String strNewListItem = null;
-					DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
-					Object obj = node.getUserObject();
-					if( obj instanceof BackupFile ) { // file node
-						BackupFile backupFile = (BackupFile) obj;
-						strNewListItem = backupFile.getPath().toString();
-					} else {
-						strNewListItem = (String) obj;
-					}
+				String strNewListItem = FileTreeHelper.getSelectedPath(this.fileTree);
+				if( strNewListItem != null ) {
 					this.backupHelper.addToIncludeExcludeList( GlobalConstants.MANAGE_INCLUDE_FILE_PATTERNS, strNewListItem );
 					statusLbl.setText("Include directories have been updated..");
 				}
 				break;
 			
+			case UIContainer.ADD_TO_EXCLUDE_DIRS_ACTION:
+				strNewListItem = FileTreeHelper.getSelectedPath(this.fileTree);
+				if( strNewListItem != null ) {
+					this.backupHelper.addToIncludeExcludeList( GlobalConstants.MANAGE_EXCLUDE_DIRS, strNewListItem );
+					statusLbl.setText("Exclude directories have been updated..");
+				}
+				break;
+			
+			case UIContainer.ADD_TO_EXCLUDE_DIR_PATTERNS_ACTION:
+				strNewListItem = FileTreeHelper.getSelectedPath(this.fileTree);
+				if( strNewListItem != null ) {
+					this.backupHelper.addToIncludeExcludeList( GlobalConstants.MANAGE_EXCLUDE_DIR_PATTERNS, strNewListItem );
+					statusLbl.setText("Exclude directory patterns have been updated..");
+				}
+				break;
+			
+			case UIContainer.ADD_TO_EXCLUDE_FILE_PATTERNS_ACTION:
+				strNewListItem = FileTreeHelper.getSelectedPath(this.fileTree);
+				if( strNewListItem != null ) {
+					this.backupHelper.addToIncludeExcludeList( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, strNewListItem );
+					statusLbl.setText("Exclude file patterns have been updated..");
+				}
+				break;
 		}
 	}
 	
