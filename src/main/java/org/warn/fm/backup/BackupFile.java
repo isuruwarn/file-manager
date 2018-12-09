@@ -69,10 +69,7 @@ public class BackupFile implements Comparable<BackupFile> {
 		if( this.path==null || this.path.getFileName()==null ) {
 			return null;
 		}
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
-		return this.path.getFileName().toString() + " | " +
-		( this.createdTime==null ? "" : "Created: " + sdf.format( this.createdTime.toMillis() ) +  " | " ) +
-		( this.modifiedTime==null ? "" : "Modified: " + sdf.format( this.modifiedTime.toMillis() ) );
+		return this.path.getFileName().toString();
 	}
 
 	public boolean equals( Object other ) {

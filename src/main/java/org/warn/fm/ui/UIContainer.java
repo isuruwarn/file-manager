@@ -4,6 +4,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +18,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.ToolTipManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -58,17 +61,17 @@ public class UIContainer {
 	private static final int SCAN_BTN_WIDTH = 100;
 	private static final int SCAN_BTN_HEIGHT = 25;
 	private static final int FILE_TREE_WIDTH = 575;
-	private static final int FILE_TREE_HEIGHT = 550;
+	private static final int FILE_TREE_HEIGHT = 540;
 	private static final int TARGET_LOCATION_LBL_WIDTH = 110;
 	private static final int TARGET_LOCATION_LBL_HEIGHT = 25;
 	private static final int TARGET_LOCATION_TXT_WIDTH = 275;
 	private static final int TARGET_LOCATION_TXT_HEIGHT = 25;
-	private static final int BROWSE_BTN_WIDTH = 25;
-	private static final int BROWSE_BTN_HEIGHT = 25;
+	private static final int BROWSE_BTN_WIDTH = 50;
+	private static final int BROWSE_BTN_HEIGHT = 50;
 	private static final int BACKUP_BTN_WIDTH = 100;
 	private static final int BACKUP_BTN_HEIGHT = 25;
 	private static final int RESULTS_LBL_WIDTH = FRAME_WIDTH;
-	private static final int RESULTS_LBL_HEIGHT = 50;
+	private static final int RESULTS_LBL_HEIGHT = 70;
 	private static final int STATUS_LBL_WIDTH = FRAME_WIDTH;
 	private static final int STATUS_LBL_HEIGHT = 25;
 	
@@ -77,6 +80,7 @@ public class UIContainer {
 		JLabel scanFromDateLabel = new JLabel(SCAN_FROM_LBL);
 		scanFromDateLabel.setPreferredSize( new Dimension( SCAN_FROM_LBL_WIDTH, SCAN_FROM_LBL_HEIGHT ) );
 		scanFromDateLabel.setMinimumSize( new Dimension( SCAN_FROM_LBL_WIDTH, SCAN_FROM_LBL_HEIGHT ) );
+		//scanFromDateLabel.setBorder( BorderFactory.createLineBorder( Color.gray ) );
 		
 		JTextField scanFromDateTxt = new JTextField( backupHelper.getlastBackupTime() );
 		scanFromDateTxt.setPreferredSize( new Dimension( SCAN_FROM_TXT_WIDTH, SCAN_FROM_TXT_HEIGHT ) );
@@ -101,13 +105,15 @@ public class UIContainer {
 		filePopup.add(addToExcludeFilePatternsItem);
 		
 		FileTreeMouseAdapter fileTreeMouseAdapter = new FileTreeMouseAdapter( dirPopup, filePopup );
-		
 		JTree fileTree = new JTree( new DefaultMutableTreeNode( FILE_TREE_ROOT_NODE ) );
 		fileTree.setRootVisible(false);
 		fileTree.setEditable(true);
 		fileTree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
 		fileTree.addMouseListener(fileTreeMouseAdapter);
 		
+	    ToolTipManager.sharedInstance().registerComponent(fileTree);
+	    fileTree.setCellRenderer( new FileTreeCellRenderer() );
+	    
 		JScrollPane fileTreeScrollPane = new JScrollPane(fileTree);
 		fileTreeScrollPane.setMinimumSize( new Dimension( FILE_TREE_WIDTH, FILE_TREE_HEIGHT ) );
 		fileTreeScrollPane.setPreferredSize( new Dimension( FILE_TREE_WIDTH, FILE_TREE_HEIGHT ) );
@@ -115,6 +121,7 @@ public class UIContainer {
 		JLabel backupLocationLbl = new JLabel(BACKUP_LOCATION_LBL);
 		backupLocationLbl.setPreferredSize( new Dimension( TARGET_LOCATION_LBL_WIDTH, TARGET_LOCATION_LBL_HEIGHT ) );
 		backupLocationLbl.setMinimumSize( new Dimension( TARGET_LOCATION_LBL_WIDTH, TARGET_LOCATION_LBL_HEIGHT ) );
+		//backupLocationLbl.setBorder( BorderFactory.createLineBorder( Color.gray ) );
 		
 		String lastBackupLocation = userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_LOCATION );
 		JTextField backupLocationTxt = new JTextField( lastBackupLocation==null?"":lastBackupLocation );
@@ -151,16 +158,18 @@ public class UIContainer {
 		JLabel resultsLbl = new JLabel();
 		resultsLbl.setPreferredSize( new Dimension( RESULTS_LBL_WIDTH, RESULTS_LBL_HEIGHT ) );
 		resultsLbl.setMinimumSize( new Dimension( RESULTS_LBL_WIDTH, RESULTS_LBL_HEIGHT ) );
+		//resultsLbl.setBorder( BorderFactory.createLineBorder( Color.gray ) );
 		
 		JLabel statusLbl = new JLabel();
 		statusLbl.setPreferredSize( new Dimension( STATUS_LBL_WIDTH, STATUS_LBL_HEIGHT ) );
 		statusLbl.setMinimumSize( new Dimension( STATUS_LBL_WIDTH, STATUS_LBL_HEIGHT ) );
+		//statusLbl.setBorder( BorderFactory.createLineBorder( Color.gray ) );
 		
 		GridBagConstraints scanFromLblGridCons = new GridBagConstraints();
 		scanFromLblGridCons.gridx = 0;
 		scanFromLblGridCons.gridy = 0;
 		scanFromLblGridCons.insets = new Insets(10,10,10,10);
-		scanFromLblGridCons.anchor = GridBagConstraints.BASELINE_TRAILING;
+		scanFromLblGridCons.anchor = GridBagConstraints.LINE_START;
 		
 		GridBagConstraints scanFromTxtGridCons = new GridBagConstraints();
 		scanFromTxtGridCons.gridx = 1;
@@ -183,14 +192,15 @@ public class UIContainer {
 		GridBagConstraints fileTreePaneGridCons = new GridBagConstraints();
 		fileTreePaneGridCons.gridx = 0;
 		fileTreePaneGridCons.gridy = 1;
-		fileTreePaneGridCons.insets = new Insets(10,0,10,0);
+		fileTreePaneGridCons.insets = new Insets(5,0,5,0);
 		fileTreePaneGridCons.gridwidth = 5;
+		fileTreePaneGridCons.anchor = GridBagConstraints.CENTER;
 		
 		GridBagConstraints backupLocLblGridCons = new GridBagConstraints();
 		backupLocLblGridCons.gridx = 0;
 		backupLocLblGridCons.gridy = 2;
 		backupLocLblGridCons.insets = new Insets(10,10,10,10);
-		backupLocLblGridCons.anchor = GridBagConstraints.BASELINE_TRAILING;
+		backupLocLblGridCons.anchor = GridBagConstraints.LINE_START;
 		
 		GridBagConstraints backupLocTxtGridCons = new GridBagConstraints();
 		backupLocTxtGridCons.gridx = 1;
@@ -214,16 +224,16 @@ public class UIContainer {
 		resultsLblGridCons.gridy = 3;
 		resultsLblGridCons.insets = new Insets(5,0,0,0);
 		resultsLblGridCons.gridwidth = 5;
+		resultsLblGridCons.anchor = GridBagConstraints.CENTER;
 		
 		GridBagConstraints statusLblGridCons = new GridBagConstraints();
 		statusLblGridCons.gridx = 0;
 		statusLblGridCons.gridy = 4;
-		statusLblGridCons.insets = new Insets(0,0,0,0);
+		statusLblGridCons.insets = new Insets(10,0,0,0);
 		statusLblGridCons.gridwidth = 5;
+		statusLblGridCons.anchor = GridBagConstraints.CENTER;
 		
 		JPanel panel = new JPanel();
-		panel.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
-		panel.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		panel.setLayout( new GridBagLayout() );
 		panel.add( scanFromDateLabel, scanFromLblGridCons );
 		panel.add( scanFromDateTxt, scanFromTxtGridCons );
@@ -237,15 +247,30 @@ public class UIContainer {
 		panel.add( resultsLbl, resultsLblGridCons );
 		panel.add( statusLbl, statusLblGridCons );
 		
+		JScrollPane mainScrollPane = new JScrollPane(panel);
+		mainScrollPane.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
+		mainScrollPane.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
+		mainScrollPane.addComponentListener( new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				int w = mainScrollPane.getWidth();
+				int h = mainScrollPane.getHeight();
+				fileTreeScrollPane.setPreferredSize( new Dimension( w-40, h-225 ) );
+				fileTreeScrollPane.setSize( new Dimension( w-40, h-225 ) );
+				resultsLbl.setPreferredSize( new Dimension( w-20, RESULTS_LBL_HEIGHT ) );
+				resultsLbl.setSize( new Dimension( w-20, RESULTS_LBL_HEIGHT ) );
+				statusLbl.setPreferredSize( new Dimension( w-20, STATUS_LBL_HEIGHT ) );
+				statusLbl.setSize( new Dimension( w-20, STATUS_LBL_HEIGHT ) );
+			}
+		});
+		
 		JFrame mainFrame = new JFrame(TITLE);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
-		mainFrame.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
-		mainFrame.getContentPane().add(panel);
-		//mainFrame.setResizable(false);
+		mainFrame.getContentPane().add(mainScrollPane);
 		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null); // position to center of screen 
 		mainFrame.setVisible(true);
+		
 		
 		MainActionListener mainActionListener = new MainActionListener( backupHelper, mainFrame, scanFromDateTxt, backupLocationTxt, backupBtn, fileTree, resultsLbl, statusLbl );
 		scanBtn.addActionListener(mainActionListener);
