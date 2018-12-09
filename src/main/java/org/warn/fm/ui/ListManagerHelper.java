@@ -31,7 +31,7 @@ public class ListManagerHelper {
 	public static final String REMOVE_ITEM_ACTION = "Remove";
 	public static final String COPY_ITEM_ACTION = "Copy";
 	
-	private static final int MAIN_PANEL_WIDTH = 500;//430;
+	private static final int MAIN_PANEL_WIDTH = 500;
 	private static final int MAIN_PANEL_HEIGHT = 400;
 	private static final int LIST_SCROLL_PANE_WIDTH = 400;
 	private static final int LIST_SCROLL_PANE_HEIGHT = 350;
@@ -94,7 +94,9 @@ public class ListManagerHelper {
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
 		buttonPane.add(newItemTxt);
+		buttonPane.add(Box.createHorizontalStrut(5));
 		buttonPane.add(browseBtn);
+		buttonPane.add(Box.createHorizontalStrut(5));
 		buttonPane.add(addItemBtn);
 		buttonPane.add(Box.createHorizontalStrut(5));
 		buttonPane.add(new JSeparator(SwingConstants.VERTICAL));

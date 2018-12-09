@@ -12,6 +12,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -20,6 +21,7 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.config.ConfigConstants;
+import org.warn.fm.ui.listeners.FileTreeMouseAdapter;
 import org.warn.fm.ui.listeners.FileTreeSelectionListener;
 import org.warn.fm.ui.listeners.MainActionListener;
 import org.warn.utils.config.UserConfig;
@@ -37,6 +39,10 @@ public class UIContainer {
 	public static final String MANAGE_EXCLUDE_DIRS_ACTION = "Exclude directories..";
 	public static final String MANAGE_EXCLUDE_DIR_PATTERNS_ACTION = "Exclude directory patterns..";
 	public static final String MANAGE_EXCLUDE_FILE_PATTERNS_ACTION = "Exclude file patterns..";
+	public static final String ADD_TO_INCLUDE_FILE_PATTERNS_ACTION = "Add to Include File patterns";
+	public static final String ADD_TO_EXCLUDE_DIRS_ACTION = "Add to Exclude directories";
+	public static final String ADD_TO_EXCLUDE_DIR_PATTERNS_ACTION = "Add to Exclude directory patterns";
+	public static final String ADD_TO_EXCLUDE_FILE_PATTERNS_ACTION = "Add to Exclude file patterns";
 	public static final String SCAN_BTN_ACTION = "Scan";
 	public static final String BACKUP_BTN_ACTION = "Backup";
 	public static final String SCAN_AND_BACKUP_BTN_ACTION = "Scan and Backup";
@@ -81,12 +87,28 @@ public class UIContainer {
 		scanBtn.setPreferredSize( new Dimension( SCAN_BTN_WIDTH, SCAN_BTN_HEIGHT ) );
 		scanBtn.setMinimumSize( new Dimension( SCAN_BTN_WIDTH, SCAN_BTN_HEIGHT ) );
 		
+		JMenuItem addToExcludeDirsItem = new JMenuItem(ADD_TO_EXCLUDE_DIRS_ACTION);
+		JMenuItem addToExcludeDirPatternsItem = new JMenuItem(ADD_TO_EXCLUDE_DIR_PATTERNS_ACTION);
+		
+		JPopupMenu dirPopup = new JPopupMenu();
+		dirPopup.add(addToExcludeDirsItem);
+		dirPopup.add(addToExcludeDirPatternsItem);
+		
+		JMenuItem addToIncludeFilePatternsItem = new JMenuItem(ADD_TO_INCLUDE_FILE_PATTERNS_ACTION);
+		JMenuItem addToExcludeFilePatternsItem = new JMenuItem(ADD_TO_EXCLUDE_FILE_PATTERNS_ACTION);
+		
+		JPopupMenu filePopup = new JPopupMenu();
+		filePopup.add(addToIncludeFilePatternsItem);
+		filePopup.add(addToExcludeFilePatternsItem);
+		
+		FileTreeMouseAdapter fileTreeMouseAdapter = new FileTreeMouseAdapter( dirPopup, filePopup );
+		
 		JTree fileTree = new JTree( new DefaultMutableTreeNode( FILE_TREE_ROOT_NODE ) );
 		fileTree.setRootVisible(false);
 		fileTree.setEditable(true);
 		fileTree.getSelectionModel().setSelectionMode( TreeSelectionModel.SINGLE_TREE_SELECTION );
-		FileTreeSelectionListener treeListener = new FileTreeSelectionListener();
-		fileTree.addTreeSelectionListener(treeListener);
+		fileTree.addMouseListener(fileTreeMouseAdapter);
+		
 		JScrollPane fileTreeScrollPane = new JScrollPane(fileTree);
 		fileTreeScrollPane.setMinimumSize( new Dimension( FILE_TREE_WIDTH, FILE_TREE_HEIGHT ) );
 		fileTreeScrollPane.setPreferredSize( new Dimension( FILE_TREE_WIDTH, FILE_TREE_HEIGHT ) );
@@ -235,6 +257,10 @@ public class UIContainer {
 		manageExcludeFilePatterns.addActionListener(mainActionListener);
 		backupLocBrowseBtn.addActionListener(mainActionListener);
 		backupBtn.addActionListener(mainActionListener);
+		addToExcludeDirsItem.addActionListener(mainActionListener);
+		addToExcludeDirPatternsItem.addActionListener(mainActionListener);
+		addToIncludeFilePatternsItem.addActionListener(mainActionListener);
+		addToExcludeFilePatternsItem.addActionListener(mainActionListener);
 		
 	}
 	

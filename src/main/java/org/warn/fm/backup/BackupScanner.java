@@ -4,6 +4,7 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.FileSystemLoopException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.FileVisitor;
@@ -87,9 +88,11 @@ public class BackupScanner implements FileVisitor<Path> {
 		return CONTINUE;
 	}
 
-	public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+	public FileVisitResult visitFileFailed( Path file, IOException exc ) throws IOException {
 		if( exc instanceof FileSystemLoopException ) {
 			LOGGER.error("Cycle detected: " + file);
+		} else if( exc instanceof AccessDeniedException ) {
+			LOGGER.error("Access denied to file - " + exc.getLocalizedMessage() );
 		} else {
 			LOGGER.error("Error while accessing file \"{}\"", file, exc);
 		}

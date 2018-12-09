@@ -166,4 +166,30 @@ public class BackupHelper {
 		}
 	}
 	
+	public void addToIncludeExcludeList( String type, String item ) {
+		
+		if( type != null && item != null ) {
+			if( type.equals( GlobalConstants.MANAGE_INCLUDE_DIRS ) ) {
+				this.includeDirs.add(item);
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_DIRS, this.includeDirs );
+				
+			} else if( type.equals( GlobalConstants.MANAGE_INCLUDE_FILE_PATTERNS ) ) {
+				this.includeFilePatterns.add(item);
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS, this.includeFilePatterns );
+				
+			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_DIRS ) ) {
+				this.excludeDirs.add(item);
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS, this.excludeDirs );
+				
+			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_DIR_PATTERNS ) ) {
+				this.excludeDirPatterns.add(item);
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS, this.excludeDirPatterns );
+			
+			} else if( type.equals( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS ) ) {
+				this.excludeFilePatterns.add(item);
+				this.userConfig.updateConfig( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS, this.excludeFilePatterns );
+			}
+		}
+	}
+	
 }

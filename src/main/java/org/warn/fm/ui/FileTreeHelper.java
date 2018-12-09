@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import org.warn.fm.backup.BackupFile;
 
@@ -58,6 +59,16 @@ public class FileTreeHelper {
 				parentNode.add(childNode);
 			}
 		}
+	}
+	
+	public static Object getSelectedUserObject( JTree fileTree ) {
+		Object obj = null;
+		TreePath selectionPath = fileTree.getSelectionPath();
+		if( selectionPath != null ) {
+			DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
+			obj = node.getUserObject();			
+		}
+		return obj;
 	}
 
 }

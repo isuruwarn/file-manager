@@ -19,10 +19,9 @@ public class FileManagerApp {
 		
 		final UserConfig uc = new UserConfig( null, ConfigConstants.FILEMAN_HOME_DIR_NAME, ConfigConstants.FILEMAN_CONFIG_FILE );
 		final BackupHelper bh = new BackupHelper(uc);
-		//bh.scanForFileChanges();
 		
 		String osName = System.getProperty("os.name");
-		if( osName.contains("windows") ) {
+		if( osName.toLowerCase().contains("windows") ) {
 			try {
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 				

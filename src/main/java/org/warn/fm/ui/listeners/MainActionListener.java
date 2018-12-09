@@ -2,14 +2,12 @@ package org.warn.fm.ui.listeners;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,16 +15,20 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.warn.fm.backup.BackupFile;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.backup.BackupScanResult;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListManagerHelper;
 import org.warn.fm.ui.UIContainer;
 import org.warn.fm.util.GlobalConstants;
+import org.warn.utils.swing.UICommons;
 
 public class MainActionListener implements ActionListener {
 	
@@ -112,13 +114,7 @@ public class MainActionListener implements ActionListener {
 				break;
 			
 			case UIContainer.BROWSE_BTN_ACTION:
-				JFileChooser fc = new JFileChooser();
-				fc.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
-				int returnVal = fc.showOpenDialog(null);
-				if( returnVal == JFileChooser.APPROVE_OPTION ) {
-					File file = fc.getSelectedFile();
-					backupLocationTxt.setText( file.getPath() );
-				}
+				UICommons.chooseDirectory( backupLocationTxt );
 				break;
 			
 			case UIContainer.MANAGE_INCLUDE_DIRS_ACTION:
@@ -144,6 +140,23 @@ public class MainActionListener implements ActionListener {
 			case UIContainer.MANAGE_EXCLUDE_FILE_PATTERNS_ACTION:
 				JPanel excludeFilePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, this.backupHelper.getExcludeFilePatterns(), this.backupHelper );
 				JOptionPane.showMessageDialog( mainFrane, excludeFilePatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
+				break;
+			
+			case UIContainer.ADD_TO_INCLUDE_FILE_PATTERNS_ACTION:
+				TreePath selectionPath = this.fileTree.getSelectionPath();
+				if( selectionPath != null ) {
+					String strNewListItem = null;
+					DefaultMutableTreeNode node = (DefaultMutableTreeNode) selectionPath.getLastPathComponent();
+					Object obj = node.getUserObject();
+					if( obj instanceof BackupFile ) { // file node
+						BackupFile backupFile = (BackupFile) obj;
+						strNewListItem = backupFile.getPath().toString();
+					} else {
+						strNewListItem = (String) obj;
+					}
+					this.backupHelper.addToIncludeExcludeList( GlobalConstants.MANAGE_INCLUDE_FILE_PATTERNS, strNewListItem );
+					statusLbl.setText("Include directories have been updated..");
+				}
 				break;
 			
 		}
