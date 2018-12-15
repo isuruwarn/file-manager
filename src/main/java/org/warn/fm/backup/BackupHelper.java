@@ -1,17 +1,20 @@
 package org.warn.fm.backup;
 
-import java.io.IOException;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,26 +87,62 @@ public class BackupHelper {
 		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 		LOGGER.info("Scanning files created or modifiled after " + sdf.format( scanFromDate.getTimeInMillis() ) );
 		
-		BackupScanner scanner = new BackupScanner( scanFromDate, this.includeFilePatterns, 
-				this.excludeDirs, this.excludeDirPatterns, this.excludeFilePatterns );
-		EnumSet<FileVisitOption> opts = EnumSet.of(FileVisitOption.FOLLOW_LINKS);
-		try {
-			for( String dir: this.includeDirs ) {
-				Files.walkFileTree( Paths.get(dir), opts, Integer.MAX_VALUE, scanner );
-			}
-		} catch (IOException e) {
-			LOGGER.error("Error while scanning for file changes", e);
+		/*
+		----------------------------------------------------------------------------
+		Approach 1: Single threaded scanning, iterate through each include directory
+		Result: Average of 9.25 seconds / 28013 files
+		----------------------------------------------------------------------------
+		*/
+//		BackupScanner scanner = new BackupScanner( scanFromDate, this.includeFilePatterns, 
+//				this.excludeDirs, this.excludeDirPatterns, this.excludeFilePatterns );
+//		EnumSet<FileVisitOption> opts = EnumSet.of( FileVisitOption.FOLLOW_LINKS );
+//		try {
+//			for( String dir: this.includeDirs ) {
+//				Files.walkFileTree( Paths.get(dir), opts, Integer.MAX_VALUE, scanner );
+//			}
+//		} catch( IOException e ) {
+//			LOGGER.error("Error while scanning for file changes", e);
+//		}
+//		Set<BackupFile> newOrModifiedFiles = scanner.getNewOrModifiedFiles();
+//		int totalFileCount = scanner.getTotalFileCount().get();
+		
+		/*
+		-----------------------------------------------------------------------------
+		Approach 2: Multi-threaded scanning with FixedThreadPool using Callable task,
+					one thread per include directory
+		Result: Average of 7 seconds / 28013 files
+		-----------------------------------------------------------------------------
+		*/
+		int totalFileCount = 0;
+		Set<BackupFile> newOrModifiedFiles = new HashSet<BackupFile>();
+		List<Future<BackupScanner>> futures = new ArrayList<>();
+		ExecutorService service = Executors.newFixedThreadPool( this.includeDirs.size() );
+		for( String rootDir: this.includeDirs ) {
+			BackupScannerCallable task = new BackupScannerCallable( rootDir, 
+					new BackupScanner( scanFromDate, this.includeFilePatterns, this.excludeDirs, this.excludeDirPatterns, this.excludeFilePatterns ) 
+					);
+			Future<BackupScanner> f = service.submit(task);
+			futures.add(f);
 		}
-		Set<BackupFile> newOrModifiedFiles = scanner.getNewOrModifiedFiles();
-		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, sdf.format( System.currentTimeMillis() ) );
+
+		for( Future<BackupScanner> f: futures ) {
+			try {
+				BackupScanner scanner = f.get(); // blocking operation
+				newOrModifiedFiles.addAll( scanner.getNewOrModifiedFiles() );
+				totalFileCount += scanner.getTotalFileCount().get();
+			} catch( InterruptedException | ExecutionException e ) {
+				LOGGER.error("Error while completing file scan task", e);
+			}
+		}
 		
 		long endTime = System.currentTimeMillis();
 		double duration = (endTime - startTime) / 1000;
-		LOGGER.info("Total Files - " + scanner.getTotalFileCount() );
+		LOGGER.info("Total Files - " + totalFileCount );
 		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
-		LOGGER.info("Completed in " + duration + " second(s)..");
+		LOGGER.info("Scan completed in " + duration + " second(s)..");
 		
-		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, scanner.getTotalFileCount().get(), duration );
+		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, sdf.format( endTime ) );
+		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, totalFileCount, duration );
 		return scanResult;
 	}
 	

@@ -67,7 +67,7 @@ public class UIContainer {
 	private static final int TARGET_LOCATION_TXT_WIDTH = 275;
 	private static final int TARGET_LOCATION_TXT_HEIGHT = 25;
 	private static final int BROWSE_BTN_WIDTH = 50;
-	private static final int BROWSE_BTN_HEIGHT = 50;
+	private static final int BROWSE_BTN_HEIGHT = 25;
 	private static final int BACKUP_BTN_WIDTH = 100;
 	private static final int BACKUP_BTN_HEIGHT = 25;
 	private static final int RESULTS_LBL_WIDTH = FRAME_WIDTH;
