@@ -42,6 +42,12 @@ public class FileManagerApp {
 			}
 		});
 		
+		// TODO
+		// * Tabs for List manager
+		// * Date picker for scan from date
+		// * Progress bar
+		// * Log
+		
 //		String path = "C:\\Users\\i830520\\Documents\\Misc\\Tech";
 //		String pattern = ".*";
 //		FileHelper fh = new FileHelper();

@@ -83,7 +83,6 @@ public class BackupHelper {
 	public BackupScanResult scanForFileChanges( Calendar scanFromDate ) {
 		
 		long startTime = System.currentTimeMillis();
-		
 		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 		LOGGER.info("Scanning files created or modifiled after " + sdf.format( scanFromDate.getTimeInMillis() ) );
 		
@@ -118,9 +117,8 @@ public class BackupHelper {
 		List<Future<BackupScanner>> futures = new ArrayList<>();
 		ExecutorService service = Executors.newFixedThreadPool( this.includeDirs.size() );
 		for( String rootDir: this.includeDirs ) {
-			BackupScannerCallable task = new BackupScannerCallable( rootDir, 
-					new BackupScanner( scanFromDate, this.includeFilePatterns, this.excludeDirs, this.excludeDirPatterns, this.excludeFilePatterns ) 
-					);
+			BackupScanner scanner = new BackupScanner( scanFromDate, this.includeFilePatterns, this.excludeDirs, this.excludeDirPatterns, this.excludeFilePatterns );
+			BackupScannerCallable task = new BackupScannerCallable( rootDir, scanner );
 			Future<BackupScanner> f = service.submit(task);
 			futures.add(f);
 		}
@@ -134,6 +132,23 @@ public class BackupHelper {
 				LOGGER.error("Error while completing file scan task", e);
 			}
 		}
+		
+		/*
+		-----------------------------------------------------------------------------
+		Approach 3: Multi-threaded scanning with ForkJoinPool using RecursiveAction task
+		IMPLEMENTATION NOT COMPLETE
+		Result: Average of   seconds /   files
+		-----------------------------------------------------------------------------
+		*/
+//		AtomicInteger atomicTotalFileCount = new AtomicInteger(0);
+//		Set<BackupFile> newOrModifiedFiles = new HashSet<BackupFile>();
+//		ForkJoinPool pool = new ForkJoinPool();
+//		for( String rootDir: this.includeDirs ) {
+//			BackupScanner scanner = new BackupScanner( scanFromDate, this.includeFilePatterns, this.excludeDirs, this.excludeDirPatterns, this.excludeFilePatterns );
+//			BackupScannerFork f = new BackupScannerFork( rootDir, scanner, newOrModifiedFiles, atomicTotalFileCount );
+//			pool.invoke(f);
+//		}
+//		int totalFileCount = atomicTotalFileCount.get();
 		
 		long endTime = System.currentTimeMillis();
 		double duration = (endTime - startTime) / 1000;

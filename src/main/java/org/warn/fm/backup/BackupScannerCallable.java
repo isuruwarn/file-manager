@@ -14,11 +14,11 @@ public class BackupScannerCallable implements Callable<BackupScanner> {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(BackupScannerCallable.class);
 	
-	private String rootDir;
+	private String topLevelDir;
 	private BackupScanner scanner;
 	
-	public BackupScannerCallable( String rootDir, BackupScanner scanner ) {
-		this.rootDir = rootDir;
+	public BackupScannerCallable( String topLevelDir, BackupScanner scanner ) {
+		this.topLevelDir = topLevelDir;
 		this.scanner = scanner;
 	}
 	
@@ -26,7 +26,7 @@ public class BackupScannerCallable implements Callable<BackupScanner> {
 	public BackupScanner call() throws Exception {
 		EnumSet<FileVisitOption> opts = EnumSet.of( FileVisitOption.FOLLOW_LINKS );
 		try {
-			Files.walkFileTree( Paths.get( rootDir ), opts, Integer.MAX_VALUE, scanner );
+			Files.walkFileTree( Paths.get( topLevelDir ), opts, Integer.MAX_VALUE, scanner );
 		} catch( IOException e ) {
 			LOGGER.error("Error while scanning for file changes", e);
 		}
