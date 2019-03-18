@@ -48,10 +48,10 @@ public class FileManagerApp {
 		// * Progress bar
 		// * Log
 		
-//		String path = "C:\\Users\\i830520\\Documents\\Misc\\Tech";
-//		String pattern = ".*";
-//		FileHelper fh = new FileHelper();
-//		fh.deleteFiles( path, pattern );
+//		String path = "C:\\Users\\i830520\\dev\\archive\\Rails";
+//		String pattern = "._.DS_Store";
+//		FileOperations fo = new FileOperations();
+//		fo.deleteFiles( path, pattern );
 		
 	}
 }

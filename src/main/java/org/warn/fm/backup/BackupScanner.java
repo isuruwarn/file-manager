@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,7 @@ public class BackupScanner implements FileVisitor<Path> {
 	private static final Logger LOGGER = LoggerFactory.getLogger( BackupScanner.class );
 	
 	private AtomicInteger totalFileCount;
+	private AtomicLong newOrModifiedFileSize;
 	private Calendar scanFromDate;
 	private Set<String> includeFilePatterns;
 	private Set<String> excludeDirs;
@@ -40,6 +42,7 @@ public class BackupScanner implements FileVisitor<Path> {
 		this.excludeDirPatterns = excludeDirPatterns;
 		this.excludeFilePatterns = excludeFilePatterns;
 		this.totalFileCount = new AtomicInteger(0);
+		this.newOrModifiedFileSize = new AtomicLong(0);
 		this.newOrModifiedFiles = new TreeSet<BackupFile>();
 	}
 
@@ -79,10 +82,12 @@ public class BackupScanner implements FileVisitor<Path> {
 		FileTime createdTime = attrs.creationTime();
 		FileTime modifiedTime = attrs.lastModifiedTime();
 		if( createdTime!=null && createdTime.toMillis() >= this.scanFromDate.getTimeInMillis() ) {
-			newOrModifiedFiles.add( new BackupFile( file, DeltaType.NEW, createdTime, modifiedTime ) );
+			newOrModifiedFiles.add( new BackupFile( file, DeltaType.NEW, createdTime, modifiedTime, attrs.size() ) );
+			newOrModifiedFileSize.addAndGet( attrs.size() );
 			
 		} else if( modifiedTime!=null && modifiedTime.toMillis() >= this.scanFromDate.getTimeInMillis() ) {
-			newOrModifiedFiles.add( new BackupFile( file, DeltaType.MODIFIED, createdTime, modifiedTime ) );
+			newOrModifiedFiles.add( new BackupFile( file, DeltaType.MODIFIED, createdTime, modifiedTime, attrs.size() ) );
+			newOrModifiedFileSize.addAndGet( attrs.size() );
 		}
 		
 		return CONTINUE;
@@ -106,9 +111,13 @@ public class BackupScanner implements FileVisitor<Path> {
 	public AtomicInteger getTotalFileCount() {
 		return totalFileCount;
 	}
+	
+	public AtomicLong getNewOrModifiedFileSize() {
+		return newOrModifiedFileSize;
+	}
 
 	public Set<BackupFile> getNewOrModifiedFiles() {
 		return newOrModifiedFiles;
 	}
-
+	
 }

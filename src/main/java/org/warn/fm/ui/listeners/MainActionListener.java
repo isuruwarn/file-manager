@@ -24,6 +24,7 @@ import org.warn.fm.backup.BackupScanResult;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListManagerHelper;
 import org.warn.fm.ui.UIContainer;
+import org.warn.fm.util.FileManagerUtil;
 import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.swing.UICommons;
 
@@ -79,7 +80,8 @@ public class MainActionListener implements ActionListener {
 						BackupScanResult scanResult = backupHelper.scanForFileChanges( scanFromDate );
 						resultsLbl.setText( "<html>" +
 								"Total Files scanned: " + scanResult.getTotalFileCount() + "<br>" + 
-								"New or Modified Files: " + scanResult.getNewOrModifiedFileCount() +
+								"New or Modified Files: " + scanResult.getNewOrModifiedFileCount() + "<br>" + 
+								"New or Modified File Size: " + FileManagerUtil.printFileSizeUserFriendly( scanResult.getNewOrModifiedFileSize() ) +
 								"</html>" );
 						statusLbl.setText("Scan completed in " + scanResult.getDuration() + " second(s)");
 						if( scanResult.getNewOrModifiedFileCount() > 0 ) {

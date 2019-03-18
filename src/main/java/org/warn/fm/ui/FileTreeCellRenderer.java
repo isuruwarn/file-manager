@@ -8,6 +8,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.warn.fm.backup.BackupFile;
+import org.warn.fm.util.FileManagerUtil;
 import org.warn.fm.util.GlobalConstants;
 
 /**
@@ -40,7 +41,8 @@ public class FileTreeCellRenderer extends DefaultTreeCellRenderer {
 			toolTip = "<html><p>" +
 				//backupFile.getDeltaType() + " | " + 
 				( backupFile.getCreatedTime()==null ? "" : "Created: " + sdf.format( backupFile.getCreatedTime().toMillis() ) +  "<br>" ) +
-				( backupFile.getModifiedTime()==null ? "" : "Modified: " + sdf.format( backupFile.getModifiedTime().toMillis() ) ) +
+				( backupFile.getModifiedTime()==null ? "" : "Modified: " + sdf.format( backupFile.getModifiedTime().toMillis() ) +  "<br>" ) +
+				"Size: " + FileManagerUtil.printFileSizeUserFriendly( backupFile.getFileSize() ) +
 				"</p></html>";
 		}
 		return toolTip;

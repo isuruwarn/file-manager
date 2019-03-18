@@ -113,6 +113,7 @@ public class BackupHelper {
 		-----------------------------------------------------------------------------
 		*/
 		int totalFileCount = 0;
+		int newOrModifiedFileSize = 0;
 		Set<BackupFile> newOrModifiedFiles = new HashSet<BackupFile>();
 		List<Future<BackupScanner>> futures = new ArrayList<>();
 		ExecutorService service = Executors.newFixedThreadPool( this.includeDirs.size() );
@@ -128,6 +129,7 @@ public class BackupHelper {
 				BackupScanner scanner = f.get(); // blocking operation
 				newOrModifiedFiles.addAll( scanner.getNewOrModifiedFiles() );
 				totalFileCount += scanner.getTotalFileCount().get();
+				newOrModifiedFileSize += scanner.getNewOrModifiedFileSize().get();
 			} catch( InterruptedException | ExecutionException e ) {
 				LOGGER.error("Error while completing file scan task", e);
 			}
@@ -154,10 +156,11 @@ public class BackupHelper {
 		double duration = (endTime - startTime) / 1000;
 		LOGGER.info("Total Files - " + totalFileCount );
 		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
+		LOGGER.info("New or Modified File Size - " + newOrModifiedFileSize );
 		LOGGER.info("Scan completed in " + duration + " second(s)..");
 		
 		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, sdf.format( endTime ) );
-		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, totalFileCount, duration );
+		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, totalFileCount, newOrModifiedFileSize, duration );
 		return scanResult;
 	}
 	

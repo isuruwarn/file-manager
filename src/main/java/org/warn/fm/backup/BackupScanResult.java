@@ -6,11 +6,13 @@ public class BackupScanResult {
 	
 	private Set<BackupFile> newOrModifiedFiles;
 	private int totalFileCount;
+	private long newOrModifiedFileSize;
 	private double duration;
 	
-	public BackupScanResult( Set<BackupFile> newOrModifiedFiles, int totalFileCount, double duration ) {
+	public BackupScanResult( Set<BackupFile> newOrModifiedFiles, int totalFileCount, long newOrModifiedFileSize, double duration ) {
 		this.newOrModifiedFiles = newOrModifiedFiles;
 		this.totalFileCount = totalFileCount;
+		this.newOrModifiedFileSize = newOrModifiedFileSize;
 		this.duration = duration;
 	}
 
@@ -35,6 +37,14 @@ public class BackupScanResult {
 
 	public void setTotalFileCount(int totalFileCount) {
 		this.totalFileCount = totalFileCount;
+	}
+	
+	public long getNewOrModifiedFileSize() {
+		return newOrModifiedFileSize;
+	}
+
+	public void setNewOrModifiedFileSize(long newOrModifiedFileSize) {
+		this.newOrModifiedFileSize = newOrModifiedFileSize;
 	}
 
 	public double getDuration() {

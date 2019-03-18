@@ -13,16 +13,18 @@ public class BackupFile implements Comparable<BackupFile> {
 	private DeltaType deltaType;
 	private FileTime createdTime;
 	private FileTime modifiedTime;
+	private long fileSize;
 	
 	public BackupFile( Path path ) {
 		this.path = path;
 	}
 	
-	public BackupFile( Path path, DeltaType deltaType, FileTime createdTime, FileTime modifiedTime ) {
+	public BackupFile( Path path, DeltaType deltaType, FileTime createdTime, FileTime modifiedTime, long fileSize ) {
 		this.path = path;
 		this.deltaType = deltaType;
 		this.createdTime = createdTime;
 		this.modifiedTime = modifiedTime;
+		this.fileSize = fileSize;
 	}
 
 	public Path getPath() {
@@ -57,11 +59,20 @@ public class BackupFile implements Comparable<BackupFile> {
 		this.modifiedTime = modifiedTime;
 	}
 	
+	public long getFileSize() {
+		return fileSize;
+	}
+
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
+	}
+
 	public String getInfo() {
 		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 		return ( this.createdTime==null ? "" : "Created: " + sdf.format( this.createdTime.toMillis() ) +  " | " ) 
 			+ ( this.modifiedTime==null ? "" : "Modified: " + sdf.format( this.modifiedTime.toMillis() ) +  " | " ) 
-			+ ( this.deltaType==null ? "" : this.deltaType + " | " ) 
+			+ ( this.deltaType==null ? "" : this.deltaType + " | " )
+			+ this.fileSize + " | "
 			+ this.path;
 	}
 	
