@@ -20,8 +20,7 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.warn.fm.config.ConfigConstants;
-import org.warn.fm.ui.ProgressBar;
-import org.warn.fm.ui.ProgressBarTask;
+import org.warn.fm.ui.BackupProgressBarWorker;
 import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.config.UserConfig;
 import org.warn.utils.core.Env;
@@ -170,7 +169,7 @@ public class BackupHelper {
 		return scanResult;
 	}
 	
-	public BackupResult backup( Set<BackupFile> backupFiles, String backupLocation, ProgressBarTask task ) {
+	public BackupResult backup( Set<BackupFile> backupFiles, String backupLocation, BackupProgressBarWorker task ) {
 		
 		if( backupFiles == null || backupLocation == null || backupLocation.isEmpty() ) {
 			return null;

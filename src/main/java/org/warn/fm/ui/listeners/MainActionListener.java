@@ -24,7 +24,7 @@ import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.backup.BackupScanResult;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListManagerHelper;
-import org.warn.fm.ui.ProgressBar;
+import org.warn.fm.ui.BackupProgressBar;
 import org.warn.fm.ui.UIContainer;
 import org.warn.fm.util.FileManagerUtil;
 import org.warn.fm.util.GlobalConstants;
@@ -104,38 +104,25 @@ public class MainActionListener implements ActionListener {
 				break;
 			
 			case UIContainer.BACKUP_BTN_ACTION:
-//				if( lastScanResult != null ) {
-//					if( lastScanResult.getNewOrModifiedFileCount() > 0 ) {
-//						if( backupLocationTxt.getText() != null && !backupLocationTxt.getText().isEmpty() ) {
-//							LOGGER.debug("Starting backup process for {} file(s)..", lastScanResult.getNewOrModifiedFileCount());
-//							this.statusLbl.setText("Starting backup process for " + lastScanResult.getNewOrModifiedFileCount() + " file(s) ...");
+				if( lastScanResult != null ) {
+					
+					if( lastScanResult.getNewOrModifiedFileCount() > 0 ) {
+						
+						if( backupLocationTxt.getText() != null && !backupLocationTxt.getText().isEmpty() ) {
+							LOGGER.debug("Starting backup process for {} file(s)..", lastScanResult.getNewOrModifiedFileCount());
+							this.statusLbl.setText("Starting backup process for " + lastScanResult.getNewOrModifiedFileCount() + " file(s) ...");
+							BackupProgressBar pb = new BackupProgressBar( backupHelper, lastScanResult, backupLocationTxt.getText(), statusLbl );
+							pb.displayAndExecute();
 							
-//							ProgressBarDemo2 demo = new ProgressBarDemo2();
-//							demo.createAndShowGUI();
-				
-							ProgressBar pb = new ProgressBar( backupHelper, lastScanResult, backupLocationTxt.getText(), statusLbl );
-							//pb.createAndShowGUI();
-							
-//							SwingUtilities.invokeLater( new Runnable() {
-//								public void run() {
-//									BackupResult result = backupHelper.backup( 
-//											lastScanResult.getNewOrModifiedFiles(), backupLocationTxt.getText(), progressBar );
-//									JPanel backupResultPanel = ListManagerHelper.createBackupResultListPanel( result );
-//									JOptionPane.showOptionDialog( mainFrame, backupResultPanel, GlobalConstants.BACKUP_RESULTS, JOptionPane.NO_OPTION, -1, null, new Object[]{}, null );
-//									LOGGER.debug("Backup process completed in " + result.getDuration() + " second(s)");
-//									statusLbl.setText("Backup process completed in " + result.getDuration() + " second(s)");
-//								}
-//							});
-							
-//						} else {
-//							// show message - please select backup location
-//							JOptionPane.showMessageDialog( mainFrame, GlobalConstants.ERR_MSG_SELECT_BACKUP_LOCATION, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
-//						}
-//					} else {
-//						// show message - no new or modified files found
-//						JOptionPane.showMessageDialog( mainFrame, GlobalConstants.ERR_MSG_NO_BACKUP_NEEDED, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
-//					}
-//				}
+						} else {
+							// show message - please select backup location
+							JOptionPane.showMessageDialog( mainFrame, GlobalConstants.ERR_MSG_SELECT_BACKUP_LOCATION, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
+						}
+					} else {
+						// show message - no new or modified files found
+						JOptionPane.showMessageDialog( mainFrame, GlobalConstants.ERR_MSG_NO_BACKUP_NEEDED, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
+					}
+				}
 				break;
 			
 			case UIContainer.BROWSE_BTN_ACTION:
