@@ -1,5 +1,6 @@
 package org.warn.fm.backup;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -19,9 +20,12 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.warn.fm.config.ConfigConstants;
+import org.warn.fm.ui.ProgressBar;
+import org.warn.fm.ui.ProgressBarTask;
 import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.config.UserConfig;
 import org.warn.utils.core.Env;
+import org.warn.utils.file.FileOperations;
 
 public class BackupHelper {
 	
@@ -33,6 +37,7 @@ public class BackupHelper {
 	public static final String USER_HOME_DIR = Env.getUserHomeDir();
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger( BackupHelper.class );
+	private final SimpleDateFormat fullTimestampSDF = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 	
 	private UserConfig userConfig;
 	private Set<String> includeDirs;
@@ -65,8 +70,7 @@ public class BackupHelper {
 		String strLastBackupTime = userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
 		if( strLastBackupTime != null && !strLastBackupTime.isEmpty() ) {
 			try {
-				SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
-				Date date = sdf.parse( strLastBackupTime );
+				Date date = this.fullTimestampSDF.parse( strLastBackupTime );
 				this.lastBackupTime = Calendar.getInstance();
 				this.lastBackupTime.setTime(date);
 			} catch( ParseException e ) {
@@ -83,8 +87,7 @@ public class BackupHelper {
 	public BackupScanResult scanForFileChanges( Calendar scanFromDate ) {
 		
 		long startTime = System.currentTimeMillis();
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
-		LOGGER.info("Scanning files created or modifiled after " + sdf.format( scanFromDate.getTimeInMillis() ) );
+		LOGGER.info("Scanning files created or modifiled after " + this.fullTimestampSDF.format( scanFromDate.getTimeInMillis() ) );
 		
 		/*
 		----------------------------------------------------------------------------
@@ -113,7 +116,7 @@ public class BackupHelper {
 		-----------------------------------------------------------------------------
 		*/
 		int totalFileCount = 0;
-		int newOrModifiedFileSize = 0;
+		long newOrModifiedFileSize = 0;
 		Set<BackupFile> newOrModifiedFiles = new HashSet<BackupFile>();
 		List<Future<BackupScanner>> futures = new ArrayList<>();
 		ExecutorService service = Executors.newFixedThreadPool( this.includeDirs.size() );
@@ -136,6 +139,9 @@ public class BackupHelper {
 		}
 		
 		/*
+		
+		TODO - 	https://www.baeldung.com/java-fork-join
+				https://www.baeldung.com/thread-pool-java-and-guava
 		-----------------------------------------------------------------------------
 		Approach 3: Multi-threaded scanning with ForkJoinPool using RecursiveAction task
 		IMPLEMENTATION NOT COMPLETE
@@ -159,14 +165,64 @@ public class BackupHelper {
 		LOGGER.info("New or Modified File Size - " + newOrModifiedFileSize );
 		LOGGER.info("Scan completed in " + duration + " second(s)..");
 		
-		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, sdf.format( endTime ) );
+		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, this.fullTimestampSDF.format( endTime ) );
 		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, totalFileCount, newOrModifiedFileSize, duration );
 		return scanResult;
 	}
 	
+	public BackupResult backup( Set<BackupFile> backupFiles, String backupLocation, ProgressBarTask task ) {
+		
+		if( backupFiles == null || backupLocation == null || backupLocation.isEmpty() ) {
+			return null;
+		}
+		
+		long startTime = System.currentTimeMillis();
+		int totalFiles = backupFiles.size();
+		int completedCount = 0;
+		this.userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_LOCATION, backupLocation );
+		LOGGER.info("Backup Location - " + backupLocation);
+		
+		for( BackupFile f: backupFiles ) {
+			
+			if( !task.isCancelled() ) {
+				
+				LOGGER.debug("BackupFile[{}]={}", completedCount, f.getPath() );
+				final String source = f.getPath().toString();
+				final String target = backupLocation + File.separator + source.replace(":", "");
+				final String s = target.replace( File.separator + f.getPath().getFileName().toString(), "" );
+				FileOperations.checkOrCreateDir(s);
+	//			Path p = FileOperations.copy( f.getPath(), Paths.get(target) );
+	//			if( p == null ) {
+	//				result.addFailedFile(f);
+	//			}
+				completedCount++;
+				int progress = (int) ( (float) completedCount / totalFiles * 100 );
+				task.setTaskBarProgress(progress);
+				
+				long t = (long) (100 * Math.random());
+				try {
+					Thread.sleep(t);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		
+		}
+		
+		this.lastBackupTime = Calendar.getInstance();
+		//this.userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_TIME, this.fullTimestampSDF.format( this.lastBackupTime.getTime() ) );
+		
+		long endTime = System.currentTimeMillis();
+		long duration = (endTime - startTime) / 1000;
+		
+		BackupResult result = new BackupResult();
+		result.setDuration(duration);
+		result.setTotalFileCount(totalFiles);
+		return result;
+	}
+	
 	public String getlastBackupTime() {
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
-		return sdf.format( this.lastBackupTime.getTimeInMillis() );
+		return this.fullTimestampSDF.format( this.lastBackupTime.getTimeInMillis() );
 	}
 	
 	private void setDefaultBackupTimestamp() {

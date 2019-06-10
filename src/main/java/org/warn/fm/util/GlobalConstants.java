@@ -10,7 +10,10 @@ public class GlobalConstants {
 	public static final String MANAGE_EXCLUDE_DIRS = "Manage Exclude Directories";
 	public static final String MANAGE_EXCLUDE_DIR_PATTERNS = "Manage Exclude Directory Patterns";
 	public static final String MANAGE_EXCLUDE_FILE_PATTERNS = "Manage Exclude File Patterns";
+	public static final String BACKUP_RESULTS = "Backup Results";
 	
 	public static final String ERR_MSG_TITLE = "Error";
 	public static final String ERR_MSG_INVALID_SCAN_FROM_DATE = "Invalid Scan From Date";
+	public static final String ERR_MSG_SELECT_BACKUP_LOCATION = "Please select backup location";
+	public static final String ERR_MSG_NO_BACKUP_NEEDED = "No new or modified files found";
 }
