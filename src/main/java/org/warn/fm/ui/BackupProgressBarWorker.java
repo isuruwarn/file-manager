@@ -54,7 +54,7 @@ public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
 		if( lastBackupResult != null ) {
 			statusLbl.setText("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
 			LOGGER.debug("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
-			JPanel backupResultPanel = ListManagerHelper.createBackupResultListPanel( lastBackupResult );
+			JPanel backupResultPanel = BackupResultDisplayHelper.createBackupResultsPanel( lastBackupResult );
 			JOptionPane.showOptionDialog( frame, backupResultPanel, GlobalConstants.BACKUP_RESULTS, JOptionPane.NO_OPTION, -1, null, new Object[]{}, null );
 		}
 	}

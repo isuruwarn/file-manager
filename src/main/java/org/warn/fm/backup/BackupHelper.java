@@ -51,22 +51,22 @@ public class BackupHelper {
 		this.userConfig = userConfig;
 		
 		// add any user defined paths from config file
-		this.includeDirs = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ) );
+		this.includeDirs = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ) );
 		
 		// add any user defined include patterns from config file
-		this.includeFilePatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS ) );
+		this.includeFilePatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS ) );
 		
 		// add any user defined exclude paths from config file
-		this.excludeDirs = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ) );
+		this.excludeDirs = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ) );
 		
 		// add any user defined exclude patterns from config file
-		this.excludeDirPatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS ) );
+		this.excludeDirPatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS ) );
 		
 		// add any user defined exclude patterns from config file
-		this.excludeFilePatterns = new TreeSet<String>( userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS ) );
+		this.excludeFilePatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS ) );
 				
 		// check for last backup timestamp in config file
-		String strLastBackupTime = userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
+		String strLastBackupTime = this.userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
 		if( strLastBackupTime != null && !strLastBackupTime.isEmpty() ) {
 			try {
 				Date date = this.fullTimestampSDF.parse( strLastBackupTime );
@@ -87,6 +87,11 @@ public class BackupHelper {
 		
 		long startTime = System.currentTimeMillis();
 		LOGGER.info("Scanning files created or modifiled after " + this.fullTimestampSDF.format( scanFromDate.getTimeInMillis() ) );
+		
+		String strLastBackupLocation = this.userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_LOCATION );
+		if( strLastBackupLocation != null && !strLastBackupLocation.isEmpty() ) {
+			this.excludeDirs.add( strLastBackupLocation );
+		}
 		
 		/*
 		----------------------------------------------------------------------------
@@ -165,8 +170,9 @@ public class BackupHelper {
 		LOGGER.info("Scan completed in " + duration + " second(s)..");
 		
 		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, this.fullTimestampSDF.format( endTime ) );
-		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, totalFileCount, newOrModifiedFileSize, duration );
-		return scanResult;
+		this.excludeDirs.remove(strLastBackupLocation);
+		
+		return new BackupScanResult( newOrModifiedFiles, totalFileCount, newOrModifiedFileSize, duration );
 	}
 	
 	public BackupResult backup( Set<BackupFile> backupFiles, String backupLocation, BackupProgressBarWorker task ) {
@@ -178,6 +184,8 @@ public class BackupHelper {
 		long startTime = System.currentTimeMillis();
 		int totalFiles = backupFiles.size();
 		int completedCount = 0;
+		BackupResult result = new BackupResult();
+		
 		this.userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_LOCATION, backupLocation );
 		LOGGER.info("Backup Location - " + backupLocation);
 		
@@ -190,20 +198,20 @@ public class BackupHelper {
 				final String target = backupLocation + File.separator + source.replace(":", "");
 				final String s = target.replace( File.separator + f.getPath().getFileName().toString(), "" );
 				FileOperations.checkOrCreateDir(s);
-	//			Path p = FileOperations.copy( f.getPath(), Paths.get(target) );
-	//			if( p == null ) {
-	//				result.addFailedFile(f);
-	//			}
+				Path p = null;//FileOperations.copy( f.getPath(), Paths.get(target) );
+				if( p == null ) {
+					result.addFailedFile(f);
+				}
 				completedCount++;
 				int progress = (int) ( (float) completedCount / totalFiles * 100 );
 				task.setTaskBarProgress(progress);
 				
-				long t = (long) (100 * Math.random());
-				try {
-					Thread.sleep(t);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+//				long t = (long) (100 * Math.random());
+//				try {
+//					Thread.sleep(t);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
 			}
 		
 		}
@@ -214,7 +222,7 @@ public class BackupHelper {
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime) / 1000;
 		
-		BackupResult result = new BackupResult();
+		
 		result.setDuration(duration);
 		result.setTotalFileCount(totalFiles);
 		return result;
