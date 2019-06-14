@@ -5,13 +5,12 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.JPopupMenu;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class ListManagerMouseAdapter extends MouseAdapter {
 	
 	private JPopupMenu listItemPopupMenu;
-	
-	public ListManagerMouseAdapter( JPopupMenu listItemPopupMenu ) {
-		this.listItemPopupMenu = listItemPopupMenu;
-	}
 	
 	public void mousePressed(MouseEvent e) {
 		showPopup(e);

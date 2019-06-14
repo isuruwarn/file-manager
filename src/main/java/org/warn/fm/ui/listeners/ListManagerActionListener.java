@@ -22,32 +22,24 @@ import org.warn.fm.ui.ListManagerHelper;
 import org.warn.fm.ui.UIContainer;
 import org.warn.utils.swing.UICommons;
 
+import lombok.RequiredArgsConstructor;
+
 /** 
  * Based on:
  *   https://docs.oracle.com/javase/tutorial/uiswing/examples/components/ListDemoProject/src/components/ListDemo.java
  * 
  */
+@RequiredArgsConstructor
 public class ListManagerActionListener implements ActionListener, ListSelectionListener, DocumentListener {
 	
 	private boolean alreadyEnabled = false;
-	private String actionType;
-	private JButton addItemBtn;
-	private JButton removeItemBtn;
-	private JTextField newItemTxt;
-	private JList<String> jList;
-	private DefaultListModel<String> listModel;
-	private BackupHelper backupHelper;
-	
-	public ListManagerActionListener( String actionType, JButton addItemBtn, JButton removeItemBtn, JTextField newItemTxt, JList<String> jList, 
-			DefaultListModel<String> listModel, BackupHelper backupHelper ) {
-		this.actionType = actionType;
-		this.addItemBtn = addItemBtn;
-		this.removeItemBtn = removeItemBtn;
-		this.newItemTxt = newItemTxt;
-		this.jList = jList;
-		this.listModel = listModel;
-		this.backupHelper = backupHelper;
-	}
+	private final String actionType;
+	private final JButton addItemBtn;
+	private final JButton removeItemBtn;
+	private final JTextField newItemTxt;
+	private final JList<String> jList;
+	private final DefaultListModel<String> listModel;
+	private final BackupHelper backupHelper;
 
 	//Required by ActionListener.
 	public void actionPerformed(ActionEvent e) {

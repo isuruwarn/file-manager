@@ -1,6 +1,7 @@
 package org.warn.fm.backup;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
@@ -20,6 +21,9 @@ import java.util.concurrent.Future;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.warn.fm.config.ConfigConstants;
+import org.warn.fm.model.BackupFile;
+import org.warn.fm.model.BackupResult;
+import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.BackupProgressBarWorker;
 import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.config.UserConfig;
@@ -184,10 +188,13 @@ public class BackupHelper {
 		long startTime = System.currentTimeMillis();
 		int totalFiles = backupFiles.size();
 		int completedCount = 0;
-		BackupResult result = new BackupResult();
 		
 		this.userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_LOCATION, backupLocation );
 		LOGGER.info("Backup Location - " + backupLocation);
+		
+		long savedFileSize = 0;
+		Set<BackupFile> savedFiles = new TreeSet<BackupFile>();
+		Set<BackupFile> failedFiles = new TreeSet<BackupFile>();
 		
 		for( BackupFile f: backupFiles ) {
 			
@@ -198,34 +205,37 @@ public class BackupHelper {
 				final String target = backupLocation + File.separator + source.replace(":", "");
 				final String s = target.replace( File.separator + f.getPath().getFileName().toString(), "" );
 				FileOperations.checkOrCreateDir(s);
-				Path p = null;//FileOperations.copy( f.getPath(), Paths.get(target) );
-				if( p == null ) {
-					result.addFailedFile(f);
+				
+				try {
+					Path p = FileOperations.copy( f.getPath(), Paths.get(target) );
+					if( p == null ) {
+					//if( completedCount % 3 == 0 ) {
+						f.setStatusMessage( BackupFile.FAILED );
+						failedFiles.add(f);
+					} else {
+						f.setStatusMessage( BackupFile.SAVED );
+						savedFiles.add(f);
+						savedFileSize += f.getFileSize();
+					}
+				} catch( IOException e ) {
+					f.setStatusMessage( BackupFile.FAILED + " - " + e.getMessage() );
+					failedFiles.add(f);
 				}
+				
 				completedCount++;
 				int progress = (int) ( (float) completedCount / totalFiles * 100 );
 				task.setTaskBarProgress(progress);
-				
-//				long t = (long) (100 * Math.random());
-//				try {
-//					Thread.sleep(t);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
 			}
 		
 		}
 		
 		this.lastBackupTime = Calendar.getInstance();
-		//this.userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_TIME, this.fullTimestampSDF.format( this.lastBackupTime.getTime() ) );
+		this.userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_TIME, this.fullTimestampSDF.format( this.lastBackupTime.getTime() ) );
 		
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime) / 1000;
 		
-		
-		result.setDuration(duration);
-		result.setTotalFileCount(totalFiles);
-		return result;
+		return new BackupResult( savedFiles, failedFiles, totalFiles, duration, backupLocation, savedFileSize );
 	}
 	
 	public String getlastBackupTime() {

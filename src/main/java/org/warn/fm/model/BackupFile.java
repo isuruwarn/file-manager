@@ -1,4 +1,4 @@
-package org.warn.fm.backup;
+package org.warn.fm.model;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
@@ -7,13 +7,22 @@ import java.util.Objects;
 
 import org.warn.fm.util.GlobalConstants;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class BackupFile implements Comparable<BackupFile> {
+	
+	public static final String SAVED = "Saved successfully";
+	public static final String FAILED = "Failed";
 	
 	private Path path;
 	private DeltaType deltaType;
 	private FileTime createdTime;
 	private FileTime modifiedTime;
 	private long fileSize;
+	private String statusMessage;
 	
 	public BackupFile( Path path ) {
 		this.path = path;
@@ -26,47 +35,7 @@ public class BackupFile implements Comparable<BackupFile> {
 		this.modifiedTime = modifiedTime;
 		this.fileSize = fileSize;
 	}
-
-	public Path getPath() {
-		return path;
-	}
-
-	public void setPath(Path path) {
-		this.path = path;
-	}
-
-	public DeltaType getDeltaType() {
-		return deltaType;
-	}
-
-	public void setDeltaType(DeltaType deltaType) {
-		this.deltaType = deltaType;
-	}
-
-	public FileTime getCreatedTime() {
-		return createdTime;
-	}
-
-	public void setCreatedTime(FileTime createdTime) {
-		this.createdTime = createdTime;
-	}
-
-	public FileTime getModifiedTime() {
-		return modifiedTime;
-	}
-
-	public void setModifiedTime(FileTime modifiedTime) {
-		this.modifiedTime = modifiedTime;
-	}
 	
-	public long getFileSize() {
-		return fileSize;
-	}
-
-	public void setFileSize(long fileSize) {
-		this.fileSize = fileSize;
-	}
-
 	public String getInfo() {
 		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 		return ( this.createdTime==null ? "" : "Created: " + sdf.format( this.createdTime.toMillis() ) +  " | " ) 

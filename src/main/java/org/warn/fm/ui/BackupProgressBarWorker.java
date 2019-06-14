@@ -2,18 +2,16 @@ package org.warn.fm.ui;
 
 import java.awt.Toolkit;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.warn.fm.backup.BackupHelper;
-import org.warn.fm.backup.BackupResult;
-import org.warn.fm.backup.BackupScanResult;
-import org.warn.fm.util.GlobalConstants;
+import org.warn.fm.model.BackupResult;
+import org.warn.fm.model.BackupScanResult;
 
 public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
 	
@@ -25,13 +23,16 @@ public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
 	private String backupLocationTxt;
 	private BackupResult lastBackupResult;
 	private JLabel statusLbl;
+	private JButton backupBtn;
 	
-	public BackupProgressBarWorker( JFrame frame, BackupHelper backupHelper, BackupScanResult lastScanResult, String backupLocationTxt, JLabel statusLbl ) {
+	public BackupProgressBarWorker( JFrame frame, BackupHelper backupHelper, BackupScanResult lastScanResult, String backupLocationTxt, 
+			JLabel statusLbl, JButton backupBtn ) {
 		this.frame = frame;
 		this.backupHelper = backupHelper;
 		this.lastScanResult = lastScanResult;
 		this.backupLocationTxt = backupLocationTxt;
 		this.statusLbl = statusLbl;
+		this.backupBtn = backupBtn;
 	}
 	
 	@Override
@@ -51,11 +52,11 @@ public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
 	public void done() {
 		Toolkit.getDefaultToolkit().beep();
 		frame.dispose();
+		backupBtn.setEnabled(false);
 		if( lastBackupResult != null ) {
 			statusLbl.setText("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
 			LOGGER.debug("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
-			JPanel backupResultPanel = BackupResultDisplayHelper.createBackupResultsPanel( lastBackupResult );
-			JOptionPane.showOptionDialog( frame, backupResultPanel, GlobalConstants.BACKUP_RESULTS, JOptionPane.NO_OPTION, -1, null, new Object[]{}, null );
+			new BackupResultsFrame( lastBackupResult );
 		}
 	}
 	

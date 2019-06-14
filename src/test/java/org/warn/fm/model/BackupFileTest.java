@@ -1,4 +1,4 @@
-package org.warn.fm.backup;
+package org.warn.fm.model;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -9,6 +9,7 @@ import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.warn.fm.model.BackupFile;
 
 import junit.framework.TestCase;
 

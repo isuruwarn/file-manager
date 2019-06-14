@@ -19,6 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.warn.fm.model.BackupFile;
+import org.warn.fm.model.DeltaType;
 
 public class BackupScanner implements FileVisitor<Path> {
 	

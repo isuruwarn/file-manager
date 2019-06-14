@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.warn.fm.model.BackupFile;
 
 public class BackupScannerFork extends RecursiveAction {
 	

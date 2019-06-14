@@ -1,4 +1,4 @@
-package org.warn.fm.backup;
+package org.warn.fm.model;
 
 public enum DeltaType {
 	NEW,

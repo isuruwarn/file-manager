@@ -11,7 +11,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-import org.warn.fm.backup.BackupFile;
+import org.warn.fm.model.BackupFile;
 
 public class FileTreeHelper {
 	

@@ -6,18 +6,16 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 
-import org.warn.fm.backup.BackupFile;
+import org.warn.fm.model.BackupFile;
 import org.warn.fm.ui.FileTreeHelper;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class FileTreeMouseAdapter extends MouseAdapter {
 	
 	private JPopupMenu addToDirsPopupMenu;
 	private JPopupMenu addToFilesPopupMenu;
-	
-	public FileTreeMouseAdapter( JPopupMenu addToDirsPopupMenu, JPopupMenu addToFilesPopupMenu ) {
-		this.addToDirsPopupMenu = addToDirsPopupMenu;
-		this.addToFilesPopupMenu = addToFilesPopupMenu;
-	}
 	
 	public void mousePressed(MouseEvent e) {
 		showPopup(e);

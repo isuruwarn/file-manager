@@ -21,13 +21,14 @@ import javax.swing.tree.DefaultTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.warn.fm.backup.BackupHelper;
-import org.warn.fm.backup.BackupScanResult;
+import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListManagerHelper;
 import org.warn.fm.ui.BackupProgressBar;
 import org.warn.fm.ui.UIContainer;
 import org.warn.fm.util.FileManagerUtil;
 import org.warn.fm.util.GlobalConstants;
+import org.warn.utils.file.FileOperations;
 import org.warn.utils.swing.UICommons;
 
 public class MainActionListener implements ActionListener {
@@ -109,10 +110,16 @@ public class MainActionListener implements ActionListener {
 					if( lastScanResult.getNewOrModifiedFileCount() > 0 ) {
 						
 						if( backupLocationTxt.getText() != null && !backupLocationTxt.getText().isEmpty() ) {
-							LOGGER.debug("Starting backup process for {} file(s)..", lastScanResult.getNewOrModifiedFileCount());
-							this.statusLbl.setText("Starting backup process for " + lastScanResult.getNewOrModifiedFileCount() + " file(s) ...");
-							BackupProgressBar pb = new BackupProgressBar( backupHelper, lastScanResult, backupLocationTxt.getText(), statusLbl );
-							pb.displayAndExecute();
+							
+							if( !FileOperations.exists( backupLocationTxt.getText() ) ) {
+								JOptionPane.showMessageDialog( mainFrame, GlobalConstants.ERR_MSG_BACKUP_DIR_DOES_NOT_EXIST, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
+								
+							} else {
+								LOGGER.debug("Starting backup process for {} file(s)..", lastScanResult.getNewOrModifiedFileCount());
+								this.statusLbl.setText("Starting backup process for " + lastScanResult.getNewOrModifiedFileCount() + " file(s) ...");
+								BackupProgressBar pb = new BackupProgressBar( backupHelper, lastScanResult, backupLocationTxt.getText(), statusLbl, backupBtn );
+								pb.displayAndExecute();
+							}
 							
 						} else {
 							// show message - please select backup location

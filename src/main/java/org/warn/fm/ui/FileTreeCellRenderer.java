@@ -7,7 +7,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import org.warn.fm.backup.BackupFile;
+import org.warn.fm.model.BackupFile;
 import org.warn.fm.util.FileManagerUtil;
 import org.warn.fm.util.GlobalConstants;
 

@@ -5,13 +5,12 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.JProgressBar;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class ProgressBarPropertyChangeListener implements PropertyChangeListener {
 
 	private JProgressBar progressBar;
-	
-	public ProgressBarPropertyChangeListener( JProgressBar progressBar ) {
-		this.progressBar = progressBar;
-	}
 	
 	/**
 	 * Invoked when task's progress property changes.
