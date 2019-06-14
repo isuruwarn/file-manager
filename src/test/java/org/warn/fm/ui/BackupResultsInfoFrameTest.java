@@ -12,7 +12,7 @@ public class BackupResultsInfoFrameTest {
 	public void testBackupResultsInfoFrame() throws InterruptedException {
 		Set<BackupFile> backupFiles = TestUtils.getBackupFileSet( 1000, null );
 		new BackupResultsInfoFrame( "Test", backupFiles );
-		Thread.sleep(15000);
+		Thread.sleep(3000);
 	}
 
 }

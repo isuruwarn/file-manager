@@ -209,7 +209,6 @@ public class BackupHelper {
 				try {
 					Path p = FileOperations.copy( f.getPath(), Paths.get(target) );
 					if( p == null ) {
-					//if( completedCount % 3 == 0 ) {
 						f.setStatusMessage( BackupFile.FAILED );
 						failedFiles.add(f);
 					} else {

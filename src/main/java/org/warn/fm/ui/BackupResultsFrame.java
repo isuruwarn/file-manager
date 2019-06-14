@@ -3,6 +3,7 @@ package org.warn.fm.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,7 +22,6 @@ public class BackupResultsFrame {
 	public static final String STATUS_MSG_ALL_SUCCESSFUL = "Backup completed successfully!";
 	public static final String STATUS_MSG_SOME_FAILED = "Backup failed for certain files";
 	public static final String STATUS_MSG_ALL_FAILED = "Backup failed!";
-//	public static final String SAVE_BACKUP_INFO_ACTION = "Save Backup Info";
 	private static final String BACKUP_STATUS_LBL =
 			"<html>" +
 				"<br>" +
@@ -34,26 +34,28 @@ public class BackupResultsFrame {
 				"Failed Files: %d<br><br>" +
 			"</html>";
 	
-	private static final int MAIN_PANEL_WIDTH = 450;
+	private static final int MAIN_PANEL_WIDTH = 500;
 	private static final int MAIN_PANEL_HEIGHT = 225;
 	private static final int VIEW_SAVED_FILES_BTN_WIDTH = 125;
 	private static final int VIEW_SAVED_FILES_BTN_HEIGHT = 25;
 	private static final int VIEW_FAILED_FILES_BTN_WIDTH = 125;
 	private static final int VIEW_FAILED_FILES_BTN_HEIGHT = 25;
-//	private static final int SAVE_BACKUP_INFO_BTN_WIDTH = 125;
-//	private static final int SAVE_BACKUP_INFO_BTN_HEIGHT = 25;
 	private static final int BACKUP_STATUS_LBL_WIDTH = 400;
 	private static final int BACKUP_STATUS_LBL_HEIGHT = 125;
 	
 	public BackupResultsFrame( BackupResult backupResult ) {
 		
 		String statusMessage = STATUS_MSG_ALL_SUCCESSFUL;
+		String statusIcon = "/img/success48.png";
 		if( backupResult.getBackupStatus().equals( BackupStatus.SOME_FAILED) ) {
 			statusMessage = STATUS_MSG_SOME_FAILED;
+			statusIcon = "/img/some_failed48.png";
 		} else if( backupResult.getBackupStatus().equals( BackupStatus.FAILED) ) {
 			statusMessage = STATUS_MSG_ALL_FAILED;
+			statusIcon = "/img/failed48.png";
 		}
 		
+		JLabel backupStatusIcon = new JLabel( new ImageIcon(  getClass().getResource(statusIcon) ) );
 		JLabel backupStatusLabel = new JLabel( 
 				String.format( BACKUP_STATUS_LBL, 
 						statusMessage, 
@@ -83,18 +85,13 @@ public class BackupResultsFrame {
 		}
 		viewFailedFilesBtn.addActionListener(backupResultActionListener);
 		
-//		JButton saveBackupInfoBtn = new JButton(SAVE_BACKUP_INFO_ACTION);
-//		saveBackupInfoBtn.setPreferredSize( new Dimension( SAVE_BACKUP_INFO_BTN_WIDTH, SAVE_BACKUP_INFO_BTN_HEIGHT ) );
-//		saveBackupInfoBtn.setMinimumSize( new Dimension( SAVE_BACKUP_INFO_BTN_WIDTH, SAVE_BACKUP_INFO_BTN_HEIGHT ) );
-//		saveBackupInfoBtn.addActionListener(backupResultActionListener);
-		
 		JPanel backupResultsPanel = new JPanel();
 		backupResultsPanel.setPreferredSize( new Dimension( MAIN_PANEL_WIDTH, MAIN_PANEL_HEIGHT ) );
 		backupResultsPanel.setMinimumSize( new Dimension( MAIN_PANEL_WIDTH, MAIN_PANEL_HEIGHT ) );
+		backupResultsPanel.add( backupStatusIcon, BorderLayout.NORTH );
 		backupResultsPanel.add( backupStatusLabel, BorderLayout.LINE_START );
 		backupResultsPanel.add( viewSavedFilesBtn, BorderLayout.LINE_START );
 		backupResultsPanel.add( viewFailedFilesBtn, BorderLayout.CENTER );
-//		backupResultsPanel.add( saveBackupInfoBtn, BorderLayout.LINE_END );
 		
 		JFrame backupResultsFrame = new JFrame( GlobalConstants.BACKUP_RESULTS );
 		backupResultsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
