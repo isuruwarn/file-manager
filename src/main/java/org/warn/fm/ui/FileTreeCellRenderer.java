@@ -1,15 +1,14 @@
 package org.warn.fm.ui;
 
 import java.awt.Component;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
 import org.warn.fm.model.BackupFile;
-import org.warn.fm.util.FileManagerUtil;
-import org.warn.fm.util.GlobalConstants;
+import org.warn.utils.datetime.DateTimeUtil;
+import org.warn.utils.file.FileHelper;
 
 /**
  * https://docs.oracle.com/javase/tutorial/uiswing/components/tree.html#display
@@ -37,12 +36,11 @@ public class FileTreeCellRenderer extends DefaultTreeCellRenderer {
 		Object obj =  node.getUserObject();
 		if( obj instanceof BackupFile ) {
 			BackupFile backupFile = (BackupFile) obj;
-			SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 			toolTip = "<html><p>" +
 				//backupFile.getDeltaType() + " | " + 
-				( backupFile.getCreatedTime()==null ? "" : "Created: " + sdf.format( backupFile.getCreatedTime().toMillis() ) +  "<br>" ) +
-				( backupFile.getModifiedTime()==null ? "" : "Modified: " + sdf.format( backupFile.getModifiedTime().toMillis() ) +  "<br>" ) +
-				"Size: " + FileManagerUtil.printFileSizeUserFriendly( backupFile.getFileSize() ) +
+				( backupFile.getCreatedTime()==null ? "" : "Created: " + DateTimeUtil.fullTimestampSDF.format( backupFile.getCreatedTime().toMillis() ) +  "<br>" ) +
+				( backupFile.getModifiedTime()==null ? "" : "Modified: " + DateTimeUtil.fullTimestampSDF.format( backupFile.getModifiedTime().toMillis() ) +  "<br>" ) +
+				"Size: " + FileHelper.printFileSizeUserFriendly( backupFile.getFileSize() ) +
 				"</p></html>";
 		}
 		return toolTip;

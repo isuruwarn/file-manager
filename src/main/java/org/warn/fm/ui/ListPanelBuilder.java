@@ -24,7 +24,7 @@ import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.listeners.ListManagerActionListener;
 import org.warn.fm.ui.listeners.ListManagerMouseAdapter;
 
-public class ListManagerHelper {
+public class ListPanelBuilder {
 	
 	public static final String BROWSE_ACTION = "...";
 	public static final String ADD_ITEM_ACTION = "Add";

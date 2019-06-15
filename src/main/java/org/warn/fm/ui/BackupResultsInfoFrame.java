@@ -3,7 +3,6 @@ package org.warn.fm.ui;
 import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.text.SimpleDateFormat;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -13,12 +12,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import org.warn.fm.model.BackupFile;
-import org.warn.fm.util.FileManagerUtil;
-import org.warn.fm.util.GlobalConstants;
+import org.warn.utils.datetime.DateTimeUtil;
+import org.warn.utils.file.FileHelper;
 
 public class BackupResultsInfoFrame {
-	
-	private static final SimpleDateFormat fullTimestampSDF = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 	
 	private static final String[] FILE_INFO_TABLE_COLUMNS = { 
 			"", "File Name", "Location", "Status", "Size", "Created Date", "Modified Date" };
@@ -37,9 +34,9 @@ public class BackupResultsInfoFrame {
 			data[i.get()][1] = f.toString();
 			data[i.get()][2] = f.getPath().toString();
 			data[i.get()][3] = f.getStatusMessage();
-			data[i.get()][4] = FileManagerUtil.printFileSizeUserFriendly( f.getFileSize() );
-			data[i.get()][5] = fullTimestampSDF.format( f.getCreatedTime().toMillis() );
-			data[i.get()][6] = fullTimestampSDF.format( f.getModifiedTime().toMillis() );
+			data[i.get()][4] = FileHelper.printFileSizeUserFriendly( f.getFileSize() );
+			data[i.get()][5] = DateTimeUtil.fullTimestampSDF.format( f.getCreatedTime().toMillis() );
+			data[i.get()][6] = DateTimeUtil.fullTimestampSDF.format( f.getModifiedTime().toMillis() );
 			i.incrementAndGet();
 		});
 		

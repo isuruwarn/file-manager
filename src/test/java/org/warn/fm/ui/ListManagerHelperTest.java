@@ -20,7 +20,7 @@ public class ListManagerHelperTest {
 	
 	@Test
 	public void testCreateListPanel() throws InterruptedException {
-		JPanel includeDirsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_INCLUDE_DIRS, bh.getIncludeDirs(), this.bh );
+		JPanel includeDirsListPanel = ListPanelBuilder.createListPanel( GlobalConstants.MANAGE_INCLUDE_DIRS, bh.getIncludeDirs(), this.bh );
 		JFrame frame = new JFrame("Test ListManagerHelperTest");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setLocationRelativeTo(null); // position to center of screen

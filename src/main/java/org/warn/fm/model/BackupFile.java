@@ -2,10 +2,9 @@ package org.warn.fm.model;
 
 import java.nio.file.Path;
 import java.nio.file.attribute.FileTime;
-import java.text.SimpleDateFormat;
 import java.util.Objects;
 
-import org.warn.fm.util.GlobalConstants;
+import org.warn.utils.datetime.DateTimeUtil;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,9 +36,8 @@ public class BackupFile implements Comparable<BackupFile> {
 	}
 	
 	public String getInfo() {
-		SimpleDateFormat sdf = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
-		return ( this.createdTime==null ? "" : "Created: " + sdf.format( this.createdTime.toMillis() ) +  " | " ) 
-			+ ( this.modifiedTime==null ? "" : "Modified: " + sdf.format( this.modifiedTime.toMillis() ) +  " | " ) 
+		return ( this.createdTime==null ? "" : "Created: " + DateTimeUtil.fullTimestampSDF.format( this.createdTime.toMillis() ) +  " | " ) 
+			+ ( this.modifiedTime==null ? "" : "Modified: " + DateTimeUtil.fullTimestampSDF.format( this.modifiedTime.toMillis() ) +  " | " ) 
 			+ ( this.deltaType==null ? "" : this.deltaType + " | " )
 			+ this.fileSize + " | "
 			+ this.path;

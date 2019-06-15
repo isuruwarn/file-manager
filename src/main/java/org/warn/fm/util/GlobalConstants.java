@@ -2,9 +2,6 @@ package org.warn.fm.util;
 
 public class GlobalConstants {
 	
-	public static final String FULL_TS_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	public static final String DATE_ONLY_TS_FORMAT = "yyyy-MM-dd";
-	
 	public static final String MANAGE_INCLUDE_DIRS = "Manage Include Directories";
 	public static final String MANAGE_INCLUDE_FILE_PATTERNS = "Manage Include File Patterns";
 	public static final String MANAGE_EXCLUDE_DIRS = "Manage Exclude Directories";

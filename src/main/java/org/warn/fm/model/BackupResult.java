@@ -2,7 +2,7 @@ package org.warn.fm.model;
 
 import java.util.Set;
 
-import org.warn.fm.util.FileManagerUtil;
+import org.warn.utils.file.FileHelper;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -61,7 +61,7 @@ public class BackupResult {
 				backupLocation,
 				totalFileCount, 
 				duration, 
-				savedFiles.size(), FileManagerUtil.printFileSizeUserFriendly( savedFileSize ),
+				savedFiles.size(), FileHelper.printFileSizeUserFriendly( savedFileSize ),
 				failedFiles.size() );
 	}
 	

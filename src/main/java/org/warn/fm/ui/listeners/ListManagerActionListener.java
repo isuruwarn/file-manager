@@ -18,7 +18,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.warn.fm.backup.BackupHelper;
-import org.warn.fm.ui.ListManagerHelper;
+import org.warn.fm.ui.ListPanelBuilder;
 import org.warn.fm.ui.UIContainer;
 import org.warn.utils.swing.UICommons;
 
@@ -47,7 +47,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 		String command = e.getActionCommand();
 		switch(command) {
 			
-			case ListManagerHelper.BROWSE_ACTION:
+			case ListPanelBuilder.BROWSE_ACTION:
 				if( this.actionType.equals( UIContainer.MANAGE_INCLUDE_DIRS_ACTION ) || this.actionType.equals( UIContainer.MANAGE_EXCLUDE_DIRS_ACTION )
 						|| this.actionType.equals( UIContainer.MANAGE_EXCLUDE_DIR_PATTERNS_ACTION ) ) {
 					UICommons.chooseDirectory( newItemTxt );
@@ -56,7 +56,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				}
 				break;
 				
-			case ListManagerHelper.ADD_ITEM_ACTION:
+			case ListPanelBuilder.ADD_ITEM_ACTION:
 				String name = this.newItemTxt.getText();
 		
 				//User didn't type in a unique name...
@@ -91,7 +91,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				
 				break;
 			
-			case ListManagerHelper.REMOVE_ITEM_ACTION:
+			case ListPanelBuilder.REMOVE_ITEM_ACTION:
 				//This method can be called only if
 				//there's a valid selection
 				//so go ahead and remove whatever's selected.
@@ -118,7 +118,7 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				
 				break;
 			
-			case ListManagerHelper.COPY_ITEM_ACTION:
+			case ListPanelBuilder.COPY_ITEM_ACTION:
 				String value = this.jList.getSelectedValue();
 				StringSelection stringSelection = new StringSelection(value);
 				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
