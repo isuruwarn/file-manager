@@ -1,6 +1,13 @@
 package org.warn.fm.util;
 
+import java.text.SimpleDateFormat;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class FileManagerUtil {
+	
+	public static final SimpleDateFormat fullTimestampSDF = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
+	public static final ObjectMapper mapper = new ObjectMapper();
 	
 	private static final long KB = 1024;
 	private static final long MB = 1048576;

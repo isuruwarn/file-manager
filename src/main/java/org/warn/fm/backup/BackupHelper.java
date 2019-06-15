@@ -22,13 +22,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.warn.fm.config.ConfigConstants;
 import org.warn.fm.model.BackupFile;
+import org.warn.fm.model.BackupLogRecord;
 import org.warn.fm.model.BackupResult;
 import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.BackupProgressBarWorker;
 import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.config.UserConfig;
+import org.warn.utils.config.UserConfigJsonUtils;
 import org.warn.utils.core.Env;
 import org.warn.utils.file.FileOperations;
+
+import lombok.Getter;
 
 public class BackupHelper {
 	
@@ -43,11 +47,25 @@ public class BackupHelper {
 	private final SimpleDateFormat fullTimestampSDF = new SimpleDateFormat( GlobalConstants.FULL_TS_FORMAT );
 	
 	private UserConfig userConfig;
+	
+	@Getter
 	private Set<String> includeDirs;
+	
+	@Getter
 	private Set<String> includeFilePatterns;
+	
+	@Getter
 	private Set<String> excludeDirs;
+	
+	@Getter
 	private Set<String> excludeDirPatterns;
+	
+	@Getter
 	private Set<String> excludeFilePatterns;
+	
+	@Getter
+	private List<BackupLogRecord> backupLog;
+	
 	private Calendar lastBackupTime;
 	
 	public BackupHelper( UserConfig userConfig ) {
@@ -84,9 +102,10 @@ public class BackupHelper {
 			// if config timestamp is null, set default timestamp
 			setDefaultBackupTimestamp();
 		}
+		
+		loadBackupLog();
 	}
-	
-	
+
 	public BackupScanResult scanForFileChanges( Calendar scanFromDate ) {
 		
 		long startTime = System.currentTimeMillis();
@@ -236,7 +255,10 @@ public class BackupHelper {
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime) / 1000;
 		
-		return new BackupResult( savedFiles, failedFiles, totalFiles, duration, backupLocation, savedFileSize );
+		BackupResult backupResult = new BackupResult( savedFiles, failedFiles, totalFiles, duration, backupLocation, savedFileSize );
+		updateBackupLog( backupResult );
+		
+		return backupResult;
 	}
 	
 	public String getlastBackupTime() {
@@ -251,25 +273,50 @@ public class BackupHelper {
 		this.lastBackupTime.set( Calendar.SECOND, 0 );
 		this.lastBackupTime.set( Calendar.MILLISECOND, 0 );
 	}
-
-	public Set<String> getIncludeDirs() {
-		return includeDirs;
+	
+	private void loadBackupLog() {
+//		this.backupLog = new ArrayList<BackupLogRecord>();
+//		final ObjectMapper mapper = new ObjectMapper();
+//		final List<String> backupLogsJsonData = UserConfigJsonUtils.loadListFromHomeDir( BackupLogRecord.class, ConfigConstants.FILEMAN_BACKUP_LOG_FILE );
+//		if( backupLogsJsonData != null )
+//			backupLogsJsonData.forEach( jsonStr -> {
+//				try {
+//					BackupLogRecord r = mapper.readValue( jsonStr, BackupLogRecord.class );
+//					this.backupLog.add(r);
+//				} catch( IOException  e ) {
+//					LOGGER.error("Error while loading Backup Log", e);
+//				}
+//			});
+//		JavaType type = FileManagerUtil.mapper.getTypeFactory().constructCollectionType( List.class, BackupLogRecord.class );
+//		this.backupLog = UserConfigJsonUtils.loadListFromHomeDir( type, ConfigConstants.FILEMAN_BACKUP_LOG_FILE );
+		this.backupLog = UserConfigJsonUtils.loadListFromHomeDir( BackupLogRecord.class, ConfigConstants.FILEMAN_BACKUP_LOG_FILE );
 	}
 	
-	public Set<String> getIncludeFilePatterns() {
-		return includeFilePatterns;
-	}
-
-	public Set<String> getExcludeDirs() {
-		return excludeDirs;
-	}
-
-	public Set<String> getExcludeDirPatterns() {
-		return excludeDirPatterns;
-	}
-	
-	public Set<String> getExcludeFilePatterns() {
-		return excludeFilePatterns;
+	private void updateBackupLog( BackupResult backupResult ) {
+		
+		BackupLogRecord r = BackupLogRecord.builder()
+									.lastBackupTime( this.lastBackupTime )
+									.backupStatus( backupResult.getBackupStatus() )
+									.totalFileCount( backupResult.getTotalFileCount() )
+									.savedFileCount( backupResult.getSavedFiles().size() )
+									.savedFileSize( backupResult.getSavedFileSize() )
+									.failedFileCount( backupResult.getFailedFiles().size() )
+									.duration( backupResult.getDuration() )
+									.backupLocation( backupResult.getBackupLocation() )
+									.build();
+		this.backupLog.add(r);
+		
+//		final List<String> backupLogsJsonData =  new ArrayList<String>( this.backupLog.size() );
+//		final ObjectMapper mapper = new ObjectMapper();
+//		this.backupLog.forEach( backupLogRecord -> {
+//			try {
+//				backupLogsJsonData.add( mapper.writeValueAsString(backupLogRecord) );
+//			} catch( IOException e) {
+//				LOGGER.error("Error while updating Backup Log", e);
+//			}
+//		});
+		
+		UserConfigJsonUtils.updateListInHomeDir( this.backupLog, ConfigConstants.FILEMAN_BACKUP_LOG_FILE );
 	}
 	
 	public void updateIncludeExcludeList( String type, Set<String> updatedList ) {

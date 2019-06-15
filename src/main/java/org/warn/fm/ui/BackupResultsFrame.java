@@ -12,27 +12,12 @@ import javax.swing.JPanel;
 import org.warn.fm.model.BackupResult;
 import org.warn.fm.model.BackupStatus;
 import org.warn.fm.ui.listeners.BackupResultActionListener;
-import org.warn.fm.util.FileManagerUtil;
 import org.warn.fm.util.GlobalConstants;
 
 public class BackupResultsFrame {
 
 	public static final String VIEW_SAVED_FILES_ACTION = "View Saved";
 	public static final String VIEW_FAILED_FILES_ACTION = "View Failed";
-	public static final String STATUS_MSG_ALL_SUCCESSFUL = "Backup completed successfully!";
-	public static final String STATUS_MSG_SOME_FAILED = "Backup failed for certain files";
-	public static final String STATUS_MSG_ALL_FAILED = "Backup failed!";
-	private static final String BACKUP_STATUS_LBL =
-			"<html>" +
-				"<br>" +
-				"%s<br>" + // status message
-				"<br>" +
-				"Backup Location: %s<br>" + 
-				"Total Files: %d<br>" + 
-				"Duration: %.1f second(s)<br>" + 
-				"Saved Files: %d (%s)<br>" +
-				"Failed Files: %d<br><br>" +
-			"</html>";
 	
 	private static final int MAIN_PANEL_WIDTH = 500;
 	private static final int MAIN_PANEL_HEIGHT = 225;
@@ -45,25 +30,15 @@ public class BackupResultsFrame {
 	
 	public BackupResultsFrame( BackupResult backupResult ) {
 		
-		String statusMessage = STATUS_MSG_ALL_SUCCESSFUL;
 		String statusIcon = "/img/success48.png";
 		if( backupResult.getBackupStatus().equals( BackupStatus.SOME_FAILED) ) {
-			statusMessage = STATUS_MSG_SOME_FAILED;
 			statusIcon = "/img/some_failed48.png";
 		} else if( backupResult.getBackupStatus().equals( BackupStatus.FAILED) ) {
-			statusMessage = STATUS_MSG_ALL_FAILED;
 			statusIcon = "/img/failed48.png";
 		}
 		
-		JLabel backupStatusIcon = new JLabel( new ImageIcon(  getClass().getResource(statusIcon) ) );
-		JLabel backupStatusLabel = new JLabel( 
-				String.format( BACKUP_STATUS_LBL, 
-						statusMessage, 
-						backupResult.getBackupLocation(),
-						backupResult.getTotalFileCount(), 
-						backupResult.getDuration(), 
-						backupResult.getSavedFiles().size(), FileManagerUtil.printFileSizeUserFriendly( backupResult.getSavedFileSize() ),
-						backupResult.getFailedFiles().size() ) );
+		JLabel backupStatusIcon = new JLabel( new ImageIcon( getClass().getResource(statusIcon) ) );
+		JLabel backupStatusLabel = new JLabel( backupResult.getBackupResultsSummaryHTML() );
 		backupStatusLabel.setPreferredSize( new Dimension( BACKUP_STATUS_LBL_WIDTH, BACKUP_STATUS_LBL_HEIGHT ) );
 		backupStatusLabel.setMinimumSize( new Dimension( BACKUP_STATUS_LBL_WIDTH, BACKUP_STATUS_LBL_HEIGHT ) );
 		

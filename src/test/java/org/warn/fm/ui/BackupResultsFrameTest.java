@@ -2,9 +2,6 @@ package org.warn.fm.ui;
 
 import java.util.Set;
 
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.warn.fm.model.BackupFile;
@@ -15,17 +12,7 @@ public class BackupResultsFrameTest {
 	
 	@Before
 	public void setup() {
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+		
 	}
 	
 	@Test

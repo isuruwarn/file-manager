@@ -41,6 +41,7 @@ public class UIContainer {
 	public static final String MANAGE_EXCLUDE_DIRS_ACTION = "Exclude directories..";
 	public static final String MANAGE_EXCLUDE_DIR_PATTERNS_ACTION = "Exclude directory patterns..";
 	public static final String MANAGE_EXCLUDE_FILE_PATTERNS_ACTION = "Exclude file patterns..";
+	public static final String VIEW_BACKUP_LOG_ACTION = "View Backup Log";
 	public static final String ADD_TO_INCLUDE_FILE_PATTERNS_ACTION = "Add to Include File patterns";
 	public static final String ADD_TO_EXCLUDE_DIRS_ACTION = "Add to Exclude directories";
 	public static final String ADD_TO_EXCLUDE_DIR_PATTERNS_ACTION = "Add to Exclude directory patterns";
@@ -142,6 +143,7 @@ public class UIContainer {
 		JMenuItem manageExcludeDirs = new JMenuItem( MANAGE_EXCLUDE_DIRS_ACTION );
 		JMenuItem manageExcludeDirPatterns = new JMenuItem( MANAGE_EXCLUDE_DIR_PATTERNS_ACTION );
 		JMenuItem manageExcludeFilePatterns = new JMenuItem( MANAGE_EXCLUDE_FILE_PATTERNS_ACTION );
+		JMenuItem viewBackupLog = new JMenuItem( VIEW_BACKUP_LOG_ACTION );
 		
 		JMenu settingsMenu = new JMenu(SETTINGS_BTN_ACTION);
 		settingsMenu.setPreferredSize( new Dimension( SETTINGS_BTN_WIDTH, SETTINGS_BTN_HEIGHT ) );
@@ -151,6 +153,7 @@ public class UIContainer {
 		settingsMenu.add(manageExcludeDirs);
 		settingsMenu.add(manageExcludeDirPatterns);
 		settingsMenu.add(manageExcludeFilePatterns);
+		settingsMenu.add(viewBackupLog);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(settingsMenu);
@@ -279,6 +282,7 @@ public class UIContainer {
 		manageExcludeDirs.addActionListener(mainActionListener);
 		manageExcludeDirPatterns.addActionListener(mainActionListener);
 		manageExcludeFilePatterns.addActionListener(mainActionListener);
+		viewBackupLog.addActionListener(mainActionListener);
 		backupLocBrowseBtn.addActionListener(mainActionListener);
 		backupBtn.addActionListener(mainActionListener);
 		addToExcludeDirsItem.addActionListener(mainActionListener);

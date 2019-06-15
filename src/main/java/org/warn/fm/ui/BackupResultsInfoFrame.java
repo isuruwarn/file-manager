@@ -30,16 +30,6 @@ public class BackupResultsInfoFrame {
 	
 	public BackupResultsInfoFrame( String title, Set<BackupFile> backupFiles ) {
 		
-		/*
-		DefaultListModel<BackupFile> listModel = new DefaultListModel<BackupFile>();
-		for( BackupFile f: backupFiles ) {
-			listModel.addElement(f);
-		}
-		JList<BackupFile> jList = new JList<BackupFile>(listModel);
-		jList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		//jList.setSelectedIndex(0);
-		jList.setVisibleRowCount(15);
-		*/
 		final AtomicInteger i = new AtomicInteger(0);
 		String[][] data = new String[backupFiles.size()][7];
 		backupFiles.stream().forEachOrdered( f -> {
@@ -54,9 +44,6 @@ public class BackupResultsInfoFrame {
 		});
 		
 		final JTable table = new JTable( data, FILE_INFO_TABLE_COLUMNS );
-		//table.setPreferredScrollableViewportSize( new Dimension( FILE_INFO_SCROLL_PANE_HEIGHT, backupFiles.size()*15 ) );
-		//table.setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
-		//table.setFillsViewportHeight(true);
 		table.setColumnSelectionAllowed(false);
 		table.setRowSelectionAllowed(false);
 		table.setCellSelectionEnabled(false);

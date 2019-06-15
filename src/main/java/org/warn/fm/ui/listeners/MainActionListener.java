@@ -24,6 +24,7 @@ import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListManagerHelper;
+import org.warn.fm.ui.BackupLogFrame;
 import org.warn.fm.ui.BackupProgressBar;
 import org.warn.fm.ui.UIContainer;
 import org.warn.fm.util.FileManagerUtil;
@@ -159,6 +160,10 @@ public class MainActionListener implements ActionListener {
 			case UIContainer.MANAGE_EXCLUDE_FILE_PATTERNS_ACTION:
 				JPanel excludeFilePatternsListPanel = ListManagerHelper.createListPanel( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, this.backupHelper.getExcludeFilePatterns(), this.backupHelper );
 				JOptionPane.showMessageDialog( mainFrame, excludeFilePatternsListPanel, GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, JOptionPane.NO_OPTION, new ImageIcon("") );
+				break;
+			
+			case UIContainer.VIEW_BACKUP_LOG_ACTION:
+				new BackupLogFrame( this.backupHelper.getBackupLog() );
 				break;
 			
 			case UIContainer.ADD_TO_INCLUDE_FILE_PATTERNS_ACTION:

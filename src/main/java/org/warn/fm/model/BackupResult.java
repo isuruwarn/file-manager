@@ -2,6 +2,8 @@ package org.warn.fm.model;
 
 import java.util.Set;
 
+import org.warn.fm.util.FileManagerUtil;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -9,6 +11,21 @@ import lombok.NonNull;
 @Getter
 @AllArgsConstructor
 public class BackupResult {
+	
+	private static final String STATUS_MSG_ALL_SUCCESSFUL = "Backup completed successfully!";
+	private static final String STATUS_MSG_SOME_FAILED = "Backup failed for certain files";
+	private static final String STATUS_MSG_ALL_FAILED = "Backup failed!";
+	private static final String BACKUP_SUMMARY_LBL_HTML =
+			"<html>" +
+				"<br>" +
+				"%s<br>" + // status message
+				"<br>" +
+				"Backup Location: %s<br>" + 
+				"Total Files: %d<br>" + 
+				"Duration: %.1f second(s)<br>" + 
+				"Saved Files: %d (%s)<br>" +
+				"Failed Files: %d<br><br>" +
+			"</html>";
 	
 	@NonNull
 	private Set<BackupFile> savedFiles;
@@ -38,14 +55,28 @@ public class BackupResult {
 		return BackupStatus.NONE;
 	}
 	
-//	public String getBackupResultsSummary( String summaryLabel, String statusMessage ) {
-//		return String.format( summaryLabel, 
-//				statusMessage, 
-//				backupLocation,
-//				totalFileCount, 
-//				duration, 
-//				savedFiles.size(), FileManagerUtil.printFileSizeUserFriendly( savedFileSize ),
-//				failedFiles.size() );
-//	}
+	public String getBackupResultsSummaryHTML() {
+		return String.format( BACKUP_SUMMARY_LBL_HTML, 
+				getBackupStatusMessage(), 
+				backupLocation,
+				totalFileCount, 
+				duration, 
+				savedFiles.size(), FileManagerUtil.printFileSizeUserFriendly( savedFileSize ),
+				failedFiles.size() );
+	}
+	
+	private String getBackupStatusMessage() {
+		BackupStatus status = getBackupStatus();
+		if( status.equals( BackupStatus.SUCCESS ) ) {
+			return STATUS_MSG_ALL_SUCCESSFUL;
+		}
+		if( status.equals( BackupStatus.SOME_FAILED ) ) {
+			return STATUS_MSG_SOME_FAILED;
+		}
+		if( status.equals( BackupStatus.FAILED ) ) {
+			return STATUS_MSG_ALL_FAILED;
+		}
+		return "";
+	}
 	
 }
