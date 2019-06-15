@@ -31,7 +31,7 @@ public class ListManagerHelper {
 	public static final String REMOVE_ITEM_ACTION = "Remove";
 	public static final String COPY_ITEM_ACTION = "Copy";
 	
-	private static final int MAIN_PANEL_WIDTH = 410;
+	private static final int MAIN_PANEL_WIDTH = 525;
 	private static final int MAIN_PANEL_HEIGHT = 500;
 	private static final int LIST_SCROLL_PANE_WIDTH = 400;
 	private static final int LIST_SCROLL_PANE_HEIGHT = 350;

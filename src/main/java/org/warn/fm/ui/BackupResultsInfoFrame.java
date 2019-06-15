@@ -103,14 +103,14 @@ public class BackupResultsInfoFrame {
 			}
 		});
 		
-		JFrame webpageFrame = new JFrame(title);
-		webpageFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		webpageFrame.setPreferredSize( new Dimension( FILE_INFO_PANEL_WIDTH, FILE_INFO_PANEL_HEIGHT ) );
-		webpageFrame.setMinimumSize( new Dimension( FILE_INFO_PANEL_WIDTH, FILE_INFO_PANEL_HEIGHT ) );
-		webpageFrame.add( fileInfoPanel );
-		webpageFrame.setLocationRelativeTo(null); // position to center of screen
-		webpageFrame.pack();
-		webpageFrame.setVisible(true);
+		JFrame frame = new JFrame(title);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setPreferredSize( new Dimension( FILE_INFO_PANEL_WIDTH, FILE_INFO_PANEL_HEIGHT ) );
+		frame.setMinimumSize( new Dimension( FILE_INFO_PANEL_WIDTH, FILE_INFO_PANEL_HEIGHT ) );
+		frame.add( fileInfoPanel );
+		frame.setLocationRelativeTo(null); // position to center of screen
+		frame.pack();
+		frame.setVisible(true);
 	}
 
 }

@@ -174,7 +174,9 @@ public class BackupHelper {
 		LOGGER.info("Scan completed in " + duration + " second(s)..");
 		
 		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, this.fullTimestampSDF.format( endTime ) );
-		this.excludeDirs.remove(strLastBackupLocation);
+		if( strLastBackupLocation != null ) {
+			this.excludeDirs.remove(strLastBackupLocation);
+		}
 		
 		return new BackupScanResult( newOrModifiedFiles, totalFileCount, newOrModifiedFileSize, duration );
 	}
