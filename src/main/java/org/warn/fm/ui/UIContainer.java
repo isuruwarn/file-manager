@@ -8,6 +8,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -46,6 +47,7 @@ public class UIContainer {
 	public static final String ADD_TO_EXCLUDE_DIRS_ACTION = "Add to Exclude directories";
 	public static final String ADD_TO_EXCLUDE_DIR_PATTERNS_ACTION = "Add to Exclude directory patterns";
 	public static final String ADD_TO_EXCLUDE_FILE_PATTERNS_ACTION = "Add to Exclude file patterns";
+	public static final String ENABLE_DEBUG_LOGS_ACTION = "Enable debug logs";
 	public static final String SCAN_BTN_ACTION = "Scan";
 	public static final String BACKUP_BTN_ACTION = "Backup";
 	public static final String SCAN_AND_BACKUP_BTN_ACTION = "Scan and Backup";
@@ -144,6 +146,7 @@ public class UIContainer {
 		JMenuItem manageExcludeDirPatterns = new JMenuItem( MANAGE_EXCLUDE_DIR_PATTERNS_ACTION );
 		JMenuItem manageExcludeFilePatterns = new JMenuItem( MANAGE_EXCLUDE_FILE_PATTERNS_ACTION );
 		JMenuItem viewBackupLog = new JMenuItem( VIEW_BACKUP_LOG_ACTION );
+		JCheckBoxMenuItem enableDebugLogs = new JCheckBoxMenuItem( ENABLE_DEBUG_LOGS_ACTION );
 		
 		JMenu settingsMenu = new JMenu(SETTINGS_BTN_ACTION);
 		settingsMenu.setPreferredSize( new Dimension( SETTINGS_BTN_WIDTH, SETTINGS_BTN_HEIGHT ) );
@@ -154,6 +157,8 @@ public class UIContainer {
 		settingsMenu.add(manageExcludeDirPatterns);
 		settingsMenu.add(manageExcludeFilePatterns);
 		settingsMenu.add(viewBackupLog);
+		settingsMenu.addSeparator();
+		//settingsMenu.add(enableDebugLogs);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(settingsMenu);
@@ -283,6 +288,7 @@ public class UIContainer {
 		manageExcludeDirPatterns.addActionListener(mainActionListener);
 		manageExcludeFilePatterns.addActionListener(mainActionListener);
 		viewBackupLog.addActionListener(mainActionListener);
+		enableDebugLogs.addActionListener(mainActionListener);
 		backupLocBrowseBtn.addActionListener(mainActionListener);
 		backupBtn.addActionListener(mainActionListener);
 		addToExcludeDirsItem.addActionListener(mainActionListener);

@@ -8,6 +8,7 @@ import java.util.Calendar;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -17,6 +18,7 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
 
+import org.slf4j.LoggerFactory;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.BackupLogFrame;
@@ -24,12 +26,15 @@ import org.warn.fm.ui.BackupProgressBar;
 import org.warn.fm.ui.FileTreeHelper;
 import org.warn.fm.ui.ListPanelBuilder;
 import org.warn.fm.ui.UIContainer;
+import org.warn.fm.util.ConfigConstants;
 import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.datetime.DateTimeUtil;
 import org.warn.utils.file.FileHelper;
 import org.warn.utils.file.FileOperations;
 import org.warn.utils.swing.UICommons;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -66,6 +71,7 @@ public class MainActionListener implements ActionListener {
 		switch(command) {
 			
 			case UIContainer.SCAN_BTN_ACTION:
+				
 				log.debug("Starting scan..");
 				fileTreeHelper.clearTree(fileTree);
 				fileTree.setRootVisible(false);
@@ -194,6 +200,16 @@ public class MainActionListener implements ActionListener {
 					this.backupHelper.addToIncludeExcludeList( GlobalConstants.MANAGE_EXCLUDE_FILE_PATTERNS, strNewListItem );
 					statusLbl.setText("Exclude file patterns have been updated..");
 				}
+				break;
+			
+			case UIContainer.ENABLE_DEBUG_LOGS_ACTION:
+				//TODO does not work. need to fix it.
+				Logger fileOutputLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger( ConfigConstants.LOGBACK_FILE_OUTPUT_LOGGER );
+				JCheckBoxMenuItem checkBox = (JCheckBoxMenuItem) e.getSource();
+				if( checkBox.isSelected() ) 
+					fileOutputLogger.setLevel( Level.DEBUG );
+				else
+					fileOutputLogger.setLevel( Level.INFO );
 				break;
 		}
 	}

@@ -4,6 +4,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.UIContainer;
 import org.warn.fm.util.ConfigConstants;
@@ -11,11 +13,16 @@ import org.warn.utils.config.UserConfig;
 
 public class FileManagerApp {
 	
-//	private final Logger LOGGER = LoggerFactory.getLogger( FileManagerApp.class );
+	private final Logger log = LoggerFactory.getLogger( FileManagerApp.class );
 	
 	public static void main( String[] args ) {
-		
 		System.setProperty( ConfigConstants.FILEMAN_LOG_PROPERTY_NAME, ConfigConstants.FILEMAN_LOG_FILE );
+		new FileManagerApp().loadApp();
+	}
+	
+	public void loadApp() {
+		
+		log.info("Starting FileManager application..");
 		final UserConfig uc = new UserConfig( null, ConfigConstants.FILEMAN_HOME_DIR_NAME, ConfigConstants.FILEMAN_CONFIG_FILE );
 		final BackupHelper bh = new BackupHelper(uc);
 		
@@ -25,13 +32,13 @@ public class FileManagerApp {
 				UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 				
 			} catch (ClassNotFoundException e) {
-//				LOGGER.error("Error while loading UI Manager", e);
+				log.error("Error while loading UI Manager", e);
 			} catch (InstantiationException e) {
-//				LOGGER.error("Error while loading UI Manager", e);
+				log.error("Error while loading UI Manager", e);
 			} catch (IllegalAccessException e) {
-//				LOGGER.error("Error while loading UI Manager", e);
+				log.error("Error while loading UI Manager", e);
 			} catch (UnsupportedLookAndFeelException e) {
-//				LOGGER.error("Error while loading UI Manager", e);
+				log.error("Error while loading UI Manager", e);
 			}
 		}
 		
@@ -40,6 +47,5 @@ public class FileManagerApp {
 				new UIContainer( bh, uc );
 			}
 		});
-		
 	}
 }
