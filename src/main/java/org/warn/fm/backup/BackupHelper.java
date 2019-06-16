@@ -26,9 +26,11 @@ import org.warn.fm.model.BackupResult;
 import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.BackupProgressBarWorker;
 import org.warn.fm.util.GlobalConstants;
+import org.warn.utils.config.PropertiesHelper;
 import org.warn.utils.config.UserConfig;
 import org.warn.utils.config.UserConfigJsonUtils;
 import org.warn.utils.core.Env;
+import org.warn.utils.core.StringHelper;
 import org.warn.utils.datetime.DateTimeUtil;
 import org.warn.utils.file.FileOperations;
 
@@ -71,21 +73,20 @@ public class BackupHelper {
 		
 		this.userConfig = userConfig;
 		
-		// add any user defined paths from config file
+		String appVersion = this.userConfig.getProperty( ConfigConstants.EL_APP_VERSION );
+		if( StringHelper.isEmpty(appVersion) ) {
+			appVersion = PropertiesHelper.loadFromResourcesDir( ConfigConstants.APP_PROPERTY_FILE_NAME )
+							.getProperty( ConfigConstants.EL_APP_VERSION );
+			this.userConfig.updateConfig( ConfigConstants.EL_APP_VERSION, appVersion );
+		}
+		// 1. add user defined paths and patterns from config file
 		this.includeDirs = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ) );
-		
-		// add any user defined include patterns from config file
 		this.includeFilePatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS ) );
-		
-		// add any user defined exclude paths from config file
 		this.excludeDirs = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ) );
-		
-		// add any user defined exclude patterns from config file
 		this.excludeDirPatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS ) );
-		
-		// add any user defined exclude patterns from config file
 		this.excludeFilePatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS ) );
-				
+		
+		// 2. initialize last backup timestamp
 		// check for last backup timestamp in config file
 		String strLastBackupTime = this.userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
 		if( strLastBackupTime != null && !strLastBackupTime.isEmpty() ) {
@@ -102,6 +103,7 @@ public class BackupHelper {
 			setDefaultBackupTimestamp();
 		}
 		
+		// 3. initialize backup log
 		loadBackupLog();
 	}
 
