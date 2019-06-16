@@ -5,8 +5,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.warn.fm.backup.BackupHelper;
-import org.warn.fm.config.ConfigConstants;
 import org.warn.fm.ui.UIContainer;
+import org.warn.fm.util.ConfigConstants;
 import org.warn.utils.config.UserConfig;
 
 public class FileManagerApp {

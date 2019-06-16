@@ -17,12 +17,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.warn.fm.config.ConfigConstants;
 import org.warn.fm.model.BackupFile;
 import org.warn.fm.model.BackupLogRecord;
 import org.warn.fm.model.BackupResult;
 import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.BackupProgressBarWorker;
+import org.warn.fm.util.ConfigConstants;
 import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.config.PropertiesHelper;
 import org.warn.utils.config.UserConfig;

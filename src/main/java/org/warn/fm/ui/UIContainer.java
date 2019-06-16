@@ -23,9 +23,9 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 
 import org.warn.fm.backup.BackupHelper;
-import org.warn.fm.config.ConfigConstants;
 import org.warn.fm.ui.listeners.FileTreeMouseAdapter;
 import org.warn.fm.ui.listeners.MainActionListener;
+import org.warn.fm.util.ConfigConstants;
 import org.warn.utils.config.UserConfig;
 
 public class UIContainer {

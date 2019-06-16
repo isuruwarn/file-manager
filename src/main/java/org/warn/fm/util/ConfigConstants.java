@@ -1,4 +1,4 @@
-package org.warn.fm.config;
+package org.warn.fm.util;
 
 import org.warn.utils.core.Env;
 import org.warn.utils.datetime.DateTimeUtil;
