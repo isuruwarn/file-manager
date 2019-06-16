@@ -17,8 +17,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.warn.fm.config.ConfigConstants;
 import org.warn.fm.model.BackupFile;
 import org.warn.fm.model.BackupLogRecord;
@@ -35,7 +33,9 @@ import org.warn.utils.datetime.DateTimeUtil;
 import org.warn.utils.file.FileOperations;
 
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class BackupHelper {
 	
 	public static final String DOCUMENTS = "Documents";
@@ -45,9 +45,10 @@ public class BackupHelper {
 	public static final String DOWNLOADS = "Downloads";
 	public static final String USER_HOME_DIR = Env.getUserHomeDir();
 	
-	private static final Logger LOGGER = LoggerFactory.getLogger( BackupHelper.class );
-	
 	private UserConfig userConfig;
+	
+	@Getter
+	private String appVersion;
 	
 	@Getter
 	private Set<String> includeDirs;
@@ -73,20 +74,25 @@ public class BackupHelper {
 		
 		this.userConfig = userConfig;
 		
-		String appVersion = this.userConfig.getProperty( ConfigConstants.EL_APP_VERSION );
-		if( StringHelper.isEmpty(appVersion) ) {
-			appVersion = PropertiesHelper.loadFromResourcesDir( ConfigConstants.APP_PROPERTY_FILE_NAME )
-							.getProperty( ConfigConstants.EL_APP_VERSION );
-			this.userConfig.updateConfig( ConfigConstants.EL_APP_VERSION, appVersion );
+		// 1. load/update app version
+		this.appVersion = this.userConfig.getProperty( ConfigConstants.EL_APP_VERSION ); // load saved app version from config
+		String currentAppVersion = PropertiesHelper
+				.loadFromResourcesDir( ConfigConstants.APP_PROPERTY_FILE_NAME )
+				.getProperty( ConfigConstants.EL_APP_VERSION );
+		if( StringHelper.isEmpty( this.appVersion ) || !currentAppVersion.equals( this.appVersion ) ) {
+			//TODO check if saved app version is newer than current app version
+			this.appVersion = currentAppVersion;
+			this.userConfig.updateConfig( ConfigConstants.EL_APP_VERSION, currentAppVersion );
 		}
-		// 1. add user defined paths and patterns from config file
+		
+		// 2. add user defined paths and patterns from config file
 		this.includeDirs = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_DIRS ) );
 		this.includeFilePatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_INCLUDE_FILE_PATTERNS ) );
 		this.excludeDirs = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIRS ) );
 		this.excludeDirPatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_DIR_PATTERNS ) );
 		this.excludeFilePatterns = new TreeSet<String>( this.userConfig.getListProperty( ConfigConstants.EL_BACKUP_EXCLUDE_FILE_PATTERNS ) );
 		
-		// 2. initialize last backup timestamp
+		// 3 initialize last backup timestamp
 		// check for last backup timestamp in config file
 		String strLastBackupTime = this.userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_TIME );
 		if( strLastBackupTime != null && !strLastBackupTime.isEmpty() ) {
@@ -95,7 +101,7 @@ public class BackupHelper {
 				this.lastBackupTime = Calendar.getInstance();
 				this.lastBackupTime.setTime(date);
 			} catch( ParseException e ) {
-				LOGGER.error( "Error while passing saved backup timestamp! Using default backup timestamp", e );
+				log.error( "Error while passing saved backup timestamp! Using default backup timestamp", e );
 				setDefaultBackupTimestamp();
 			}
 		} else {
@@ -103,14 +109,14 @@ public class BackupHelper {
 			setDefaultBackupTimestamp();
 		}
 		
-		// 3. initialize backup log
+		// 4. initialize backup log
 		loadBackupLog();
 	}
 
 	public BackupScanResult scanForFileChanges( Calendar scanFromDate ) {
 		
 		long startTime = System.currentTimeMillis();
-		LOGGER.info("Scanning files created or modifiled after " + DateTimeUtil.fullTimestampSDF.format( scanFromDate.getTimeInMillis() ) );
+		log.info("Scanning files created or modifiled after " + DateTimeUtil.fullTimestampSDF.format( scanFromDate.getTimeInMillis() ) );
 		
 		String strLastBackupLocation = this.userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_LOCATION );
 		if( strLastBackupLocation != null && !strLastBackupLocation.isEmpty() ) {
@@ -131,7 +137,7 @@ public class BackupHelper {
 //				Files.walkFileTree( Paths.get(dir), opts, Integer.MAX_VALUE, scanner );
 //			}
 //		} catch( IOException e ) {
-//			LOGGER.error("Error while scanning for file changes", e);
+//			log.error("Error while scanning for file changes", e);
 //		}
 //		Set<BackupFile> newOrModifiedFiles = scanner.getNewOrModifiedFiles();
 //		int totalFileCount = scanner.getTotalFileCount().get();
@@ -162,7 +168,7 @@ public class BackupHelper {
 				totalFileCount += scanner.getTotalFileCount().get();
 				newOrModifiedFileSize += scanner.getNewOrModifiedFileSize().get();
 			} catch( InterruptedException | ExecutionException e ) {
-				LOGGER.error("Error while completing file scan task", e);
+				log.error("Error while completing file scan task", e);
 			}
 		}
 		
@@ -188,10 +194,10 @@ public class BackupHelper {
 		
 		long endTime = System.currentTimeMillis();
 		double duration = (endTime - startTime) / 1000;
-		LOGGER.info("Total Files - " + totalFileCount );
-		LOGGER.info("New or Modified Files - " + newOrModifiedFiles.size() );
-		LOGGER.info("New or Modified File Size - " + newOrModifiedFileSize );
-		LOGGER.info("Scan completed in " + duration + " second(s)..");
+		log.info("Total Files - " + totalFileCount );
+		log.info("New or Modified Files - " + newOrModifiedFiles.size() );
+		log.info("New or Modified File Size - " + newOrModifiedFileSize );
+		log.info("Scan completed in " + duration + " second(s)..");
 		
 		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, DateTimeUtil.fullTimestampSDF.format( endTime ) );
 		if( strLastBackupLocation != null ) {
@@ -212,7 +218,7 @@ public class BackupHelper {
 		int completedCount = 0;
 		
 		this.userConfig.updateConfig( ConfigConstants.EL_LAST_BACKUP_LOCATION, backupLocation );
-		LOGGER.info("Backup Location - " + backupLocation);
+		log.info("Backup Location - " + backupLocation);
 		
 		long savedFileSize = 0;
 		Set<BackupFile> savedFiles = new TreeSet<BackupFile>();
@@ -222,7 +228,7 @@ public class BackupHelper {
 			
 			if( !task.isCancelled() ) {
 				
-				LOGGER.debug("BackupFile[{}]={}", completedCount, f.getPath() );
+				log.debug("BackupFile[{}]={}", completedCount, f.getPath() );
 				final String source = f.getPath().toString();
 				final String target = backupLocation + File.separator + source.replace(":", "");
 				final String s = target.replace( File.separator + f.getPath().getFileName().toString(), "" );

@@ -7,15 +7,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingWorker;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.model.BackupResult;
 import org.warn.fm.model.BackupScanResult;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(BackupProgressBarWorker.class);
 	
 	private JFrame frame;
 	private BackupHelper backupHelper;
@@ -55,7 +54,7 @@ public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
 		backupBtn.setEnabled(false);
 		if( lastBackupResult != null ) {
 			statusLbl.setText("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
-			LOGGER.debug("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
+			log.debug("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
 			new BackupResultsFrame( lastBackupResult );
 		}
 	}

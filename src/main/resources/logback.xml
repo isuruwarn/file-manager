@@ -1,0 +1,39 @@
+<configuration>
+
+	# Console appender
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			# Pattern of log message for console appender
+			<Pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %m%n</Pattern>
+		</layout>
+	</appender>
+
+	# File appender
+	<appender name="fout" class="ch.qos.logback.core.FileAppender">
+		<file>${log.name}</file>
+		<append>true</append>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>INFO</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<encoder>
+			# Pattern of log message for file appender
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} %-5p %m%n</pattern>
+		</encoder>
+	</appender>
+	
+	# Override log level for specified package
+	<!--logger name="org.warn.fm" level="error" additivity="false">
+		<appender-ref ref="fout" />
+	</logger-->
+
+	# Override log level for specified package
+	<!--logger name="org.warn.fm" level="TRACE" /-->
+
+	<root level="DEBUG">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="fout" />
+	</root>
+	
+</configuration>

@@ -5,17 +5,15 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.warn.fm.ui.BackupProgressBar;
 import org.warn.fm.ui.BackupProgressBarWorker;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @AllArgsConstructor
 public class ProgressBarActionListener implements ActionListener {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger( ProgressBarActionListener.class );
 	
 	private JFrame frame;
 	private BackupProgressBarWorker task;
@@ -25,7 +23,7 @@ public class ProgressBarActionListener implements ActionListener {
 	 */
 	public void actionPerformed( ActionEvent evt ) {
 		if( evt.getActionCommand().equals( BackupProgressBar.CANCEL_BTN ) ) {
-			LOGGER.info("Cancel requested. Terminating backup process..");
+			log.info("Cancel requested. Terminating backup process..");
 			task.cancel(true);
 			//frame.setCursor(null);
 			frame.dispose();

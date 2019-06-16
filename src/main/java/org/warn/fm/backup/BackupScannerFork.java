@@ -1,35 +1,35 @@
 package org.warn.fm.backup;
 
-import java.io.IOException;
-import java.nio.file.FileVisitOption;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.EnumSet;
+//import java.io.IOException;
+//import java.nio.file.FileVisitOption;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
+//import java.util.EnumSet;
 import java.util.Set;
 import java.util.concurrent.RecursiveAction;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.warn.fm.model.BackupFile;
 
 public class BackupScannerFork extends RecursiveAction {
 	
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = LoggerFactory.getLogger(BackupScannerFork.class);
-	
-	private static final int THRESHOLD = 1000;
-	private Path topLevelDirPath;
-	private BackupScanner scanner;
-	private AtomicInteger totalFileCount;
-	private Set<BackupFile> newOrModifiedFiles;
+//	private static final Logger LOGGER = LoggerFactory.getLogger(BackupScannerFork.class);
+
+//	private static final int THRESHOLD = 1000;
+//	private Path topLevelDirPath;
+//	private BackupScanner scanner;
+//	private AtomicInteger totalFileCount;
+//	private Set<BackupFile> newOrModifiedFiles;
 	
 	public BackupScannerFork( String topLevelDir, BackupScanner scanner, Set<BackupFile> newOrModifiedFiles, AtomicInteger totalFileCount ) {
-		this.topLevelDirPath = Paths.get(topLevelDir);
-		this.scanner = scanner;
-		this.newOrModifiedFiles = newOrModifiedFiles;
-		this.totalFileCount = totalFileCount;
+//		this.topLevelDirPath = Paths.get(topLevelDir);
+//		this.scanner = scanner;
+//		this.newOrModifiedFiles = newOrModifiedFiles;
+//		this.totalFileCount = totalFileCount;
 	}
 	
 	@Override

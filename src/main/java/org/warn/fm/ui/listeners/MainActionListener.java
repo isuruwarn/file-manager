@@ -17,8 +17,6 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.model.BackupScanResult;
 import org.warn.fm.ui.BackupLogFrame;
@@ -32,9 +30,10 @@ import org.warn.utils.file.FileHelper;
 import org.warn.utils.file.FileOperations;
 import org.warn.utils.swing.UICommons;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class MainActionListener implements ActionListener {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(MainActionListener.class);
 	
 	private BackupHelper backupHelper;
 	private JFrame mainFrame;
@@ -67,14 +66,14 @@ public class MainActionListener implements ActionListener {
 		switch(command) {
 			
 			case UIContainer.SCAN_BTN_ACTION:
-				LOGGER.debug("Starting scan..");
+				log.debug("Starting scan..");
 				fileTreeHelper.clearTree(fileTree);
 				fileTree.setRootVisible(false);
 				Calendar scanFromDate = Calendar.getInstance();
 				try {
 					scanFromDate.setTime( DateTimeUtil.fullTimestampSDF.parse( scanFromDateTxt.getText() ) );
 				} catch (ParseException ex) {
-					LOGGER.error("Error while parsing Scan From Date", e);
+					log.error("Error while parsing Scan From Date", e);
 					JOptionPane.showMessageDialog( mainFrame, GlobalConstants.ERR_MSG_INVALID_SCAN_FROM_DATE, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
 					break;
 				}
@@ -115,7 +114,7 @@ public class MainActionListener implements ActionListener {
 								JOptionPane.showMessageDialog( mainFrame, GlobalConstants.ERR_MSG_BACKUP_DIR_DOES_NOT_EXIST, GlobalConstants.ERR_MSG_TITLE, JOptionPane.ERROR_MESSAGE );
 								
 							} else {
-								LOGGER.debug("Starting backup process for {} file(s)..", lastScanResult.getNewOrModifiedFileCount());
+								log.debug("Starting backup process for {} file(s)..", lastScanResult.getNewOrModifiedFileCount());
 								this.statusLbl.setText("Starting backup process for " + lastScanResult.getNewOrModifiedFileCount() + " file(s) ...");
 								BackupProgressBar pb = new BackupProgressBar( backupHelper, lastScanResult, backupLocationTxt.getText(), statusLbl, backupBtn );
 								pb.displayAndExecute();

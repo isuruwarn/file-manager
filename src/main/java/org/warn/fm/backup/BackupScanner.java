@@ -17,14 +17,13 @@ import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.warn.fm.model.BackupFile;
 import org.warn.fm.model.DeltaType;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class BackupScanner implements FileVisitor<Path> {
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger( BackupScanner.class );
 	
 	private AtomicInteger totalFileCount;
 	private AtomicLong newOrModifiedFileSize;
@@ -97,11 +96,11 @@ public class BackupScanner implements FileVisitor<Path> {
 
 	public FileVisitResult visitFileFailed( Path file, IOException exc ) throws IOException {
 		if( exc instanceof FileSystemLoopException ) {
-			LOGGER.error("Cycle detected: " + file);
+			log.error("Cycle detected: " + file);
 		} else if( exc instanceof AccessDeniedException ) {
-			LOGGER.error("Access denied to file - " + exc.getLocalizedMessage() );
+			log.error("Access denied to file - " + exc.getLocalizedMessage() );
 		} else {
-			LOGGER.error("Error while accessing file \"{}\"", file, exc);
+			log.error("Error while accessing file \"{}\"", file, exc);
 		}
 		return CONTINUE;
 	}
