@@ -36,7 +36,6 @@ public class BackupScanner implements FileVisitor<Path> {
 	
 	public BackupScanner( Calendar scanFromDate, Set<String> includeFilePatterns, 
 			Set<String> excludeDirs, Set<String> excludeDirPatterns, Set<String> excludeFilePatterns ) {
-		// TODO input validation
 		this.scanFromDate = scanFromDate;
 		this.includeFilePatterns = includeFilePatterns;
 		this.excludeDirs = excludeDirs;

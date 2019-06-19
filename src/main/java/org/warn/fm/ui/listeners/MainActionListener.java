@@ -72,7 +72,7 @@ public class MainActionListener implements ActionListener {
 			
 			case UIContainer.SCAN_BTN_ACTION:
 				
-				log.debug("Starting scan..");
+				log.info("Starting scan for created or modifiled files..");
 				fileTreeHelper.clearTree(fileTree);
 				fileTree.setRootVisible(false);
 				Calendar scanFromDate = Calendar.getInstance();

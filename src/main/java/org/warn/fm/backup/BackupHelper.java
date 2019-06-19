@@ -30,6 +30,7 @@ import org.warn.utils.config.UserConfigJsonUtils;
 import org.warn.utils.core.Env;
 import org.warn.utils.core.StringHelper;
 import org.warn.utils.datetime.DateTimeUtil;
+import org.warn.utils.file.FileHelper;
 import org.warn.utils.file.FileOperations;
 
 import lombok.Getter;
@@ -116,12 +117,21 @@ public class BackupHelper {
 	public BackupScanResult scanForFileChanges( Calendar scanFromDate ) {
 		
 		long startTime = System.currentTimeMillis();
-		log.info("Scanning files created or modifiled after " + DateTimeUtil.fullTimestampSDF.format( scanFromDate.getTimeInMillis() ) );
+		log.info("Scan settings - FromDate={}, ToDate={}", 
+				DateTimeUtil.fullTimestampSDF.format( scanFromDate.getTimeInMillis() ), 
+				DateTimeUtil.fullTimestampSDF.format( Calendar.getInstance().getTimeInMillis() ) );
 		
 		String strLastBackupLocation = this.userConfig.getProperty( ConfigConstants.EL_LAST_BACKUP_LOCATION );
 		if( strLastBackupLocation != null && !strLastBackupLocation.isEmpty() ) {
 			this.excludeDirs.add( strLastBackupLocation );
 		}
+//		log.info("Scan settings - IncludeDirs={},\n IncludeFilePatterns={},\n ExcludeDirs={},\n ExcludeDirPatterns={},\n ExcludeFilePatterns={}\n", 
+//				includeDirs, includeFilePatterns, excludeDirs, excludeDirPatterns, excludeFilePatterns );
+		log.info("Scan settings - IncludeDirs={}",  includeDirs );
+		log.info("Scan settings - IncludeFilePatterns={}", includeFilePatterns );
+		log.info("Scan settings - ExcludeDirs={}", excludeDirs );
+		log.info("Scan settings - ExcludeDirPatterns={}", excludeDirPatterns );
+		log.info("Scan settings - ExcludeFilePatterns={}", excludeFilePatterns );
 		
 		/*
 		----------------------------------------------------------------------------
@@ -194,17 +204,18 @@ public class BackupHelper {
 		
 		long endTime = System.currentTimeMillis();
 		double duration = (endTime - startTime) / 1000;
-		log.info("Total Files - " + totalFileCount );
-		log.info("New or Modified Files - " + newOrModifiedFiles.size() );
-		log.info("New or Modified File Size - " + newOrModifiedFileSize );
-		log.info("Scan completed in " + duration + " second(s)..");
+		BackupScanResult scanResult = new BackupScanResult( newOrModifiedFiles, totalFileCount, newOrModifiedFileSize, duration );
+		
+		log.info("Scan completed in {} second(s)..", duration);
+		log.info("Scan Results - TotalFiles={}, New or Modified Files={}, New or Modified File Size={}", scanResult.getTotalFileCount(), 
+				scanResult.getNewOrModifiedFileCount(), FileHelper.printFileSizeUserFriendly( scanResult.getNewOrModifiedFileSize() ) );
 		
 		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, DateTimeUtil.fullTimestampSDF.format( endTime ) );
 		if( strLastBackupLocation != null ) {
 			this.excludeDirs.remove(strLastBackupLocation);
 		}
 		
-		return new BackupScanResult( newOrModifiedFiles, totalFileCount, newOrModifiedFileSize, duration );
+		return scanResult;
 	}
 	
 	public BackupResult backup( Set<BackupFile> backupFiles, String backupLocation, BackupProgressBarWorker task ) {
