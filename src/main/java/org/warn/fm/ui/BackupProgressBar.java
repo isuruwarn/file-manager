@@ -8,6 +8,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextField;
 
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.model.BackupScanResult;
@@ -29,8 +30,8 @@ public class BackupProgressBar {
 	private ProgressBarPropertyChangeListener pbPropertyChangeListener;
 	private BackupProgressBarWorker task;
 	
-	public BackupProgressBar( 
-			BackupHelper backupHelper, BackupScanResult lastScanResult, String backupLocationTxt, JLabel statusLbl, JButton backupBtn ) {
+	public BackupProgressBar( BackupHelper backupHelper, BackupScanResult lastScanResult, String backupLocationTxt, 
+			JLabel statusLbl, JTextField scanFromDateTxt, JButton backupBtn ) {
 		
 		frame = new JFrame(TITLE);
 		
@@ -39,7 +40,7 @@ public class BackupProgressBar {
 		progressBar.setStringPainted(true);
 		
 		pbPropertyChangeListener = new ProgressBarPropertyChangeListener( progressBar );
-		task = new BackupProgressBarWorker( frame, backupHelper, lastScanResult, backupLocationTxt, statusLbl, backupBtn );
+		task = new BackupProgressBarWorker( frame, backupHelper, lastScanResult, backupLocationTxt, statusLbl, scanFromDateTxt, backupBtn );
 		task.addPropertyChangeListener( pbPropertyChangeListener );
 		
 		cancelButton = new JButton(CANCEL_BTN);

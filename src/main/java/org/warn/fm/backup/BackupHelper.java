@@ -125,13 +125,11 @@ public class BackupHelper {
 		if( strLastBackupLocation != null && !strLastBackupLocation.isEmpty() ) {
 			this.excludeDirs.add( strLastBackupLocation );
 		}
-//		log.info("Scan settings - IncludeDirs={},\n IncludeFilePatterns={},\n ExcludeDirs={},\n ExcludeDirPatterns={},\n ExcludeFilePatterns={}\n", 
-//				includeDirs, includeFilePatterns, excludeDirs, excludeDirPatterns, excludeFilePatterns );
-		log.info("Scan settings - IncludeDirs={}",  includeDirs );
-		log.info("Scan settings - IncludeFilePatterns={}", includeFilePatterns );
-		log.info("Scan settings - ExcludeDirs={}", excludeDirs );
-		log.info("Scan settings - ExcludeDirPatterns={}", excludeDirPatterns );
-		log.info("Scan settings - ExcludeFilePatterns={}", excludeFilePatterns );
+		log.info("Scan settings - IncludeDirs={}",  includeDirs);
+		log.info("Scan settings - IncludeFilePatterns={}", includeFilePatterns);
+		log.info("Scan settings - ExcludeDirs={}", excludeDirs);
+		log.info("Scan settings - ExcludeDirPatterns={}", excludeDirPatterns);
+		log.info("Scan settings - ExcludeFilePatterns={}", excludeFilePatterns);
 		
 		/*
 		----------------------------------------------------------------------------
@@ -181,9 +179,8 @@ public class BackupHelper {
 				log.error("Error while completing file scan task", e);
 			}
 		}
-		
+
 		/*
-		
 		TODO - 	https://www.baeldung.com/java-fork-join
 				https://www.baeldung.com/thread-pool-java-and-guava
 		-----------------------------------------------------------------------------
@@ -273,7 +270,7 @@ public class BackupHelper {
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime) / 1000;
 		
-		BackupResult backupResult = new BackupResult( savedFiles, failedFiles, totalFiles, duration, backupLocation, savedFileSize );
+		BackupResult backupResult = new BackupResult( lastBackupTime, savedFiles, failedFiles, totalFiles, duration, backupLocation, savedFileSize );
 		updateBackupLog( backupResult );
 		
 		return backupResult;
@@ -299,7 +296,7 @@ public class BackupHelper {
 	private void updateBackupLog( BackupResult backupResult ) {
 		
 		BackupLogRecord r = BackupLogRecord.builder()
-									.lastBackupTime( this.lastBackupTime )
+									.backupTime( backupResult.getBackupTime() )
 									.backupStatus( backupResult.getBackupStatus() )
 									.totalFileCount( backupResult.getTotalFileCount() )
 									.savedFileCount( backupResult.getSavedFiles().size() )

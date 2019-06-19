@@ -20,13 +20,13 @@ public class BackupResultsFrame {
 	public static final String VIEW_FAILED_FILES_ACTION = "View Failed";
 	
 	private static final int MAIN_PANEL_WIDTH = 500;
-	private static final int MAIN_PANEL_HEIGHT = 225;
+	private static final int MAIN_PANEL_HEIGHT = 250;
 	private static final int VIEW_SAVED_FILES_BTN_WIDTH = 125;
 	private static final int VIEW_SAVED_FILES_BTN_HEIGHT = 25;
 	private static final int VIEW_FAILED_FILES_BTN_WIDTH = 125;
 	private static final int VIEW_FAILED_FILES_BTN_HEIGHT = 25;
 	private static final int BACKUP_STATUS_LBL_WIDTH = 400;
-	private static final int BACKUP_STATUS_LBL_HEIGHT = 125;
+	private static final int BACKUP_STATUS_LBL_HEIGHT = 150;
 	
 	public BackupResultsFrame( BackupResult backupResult ) {
 		

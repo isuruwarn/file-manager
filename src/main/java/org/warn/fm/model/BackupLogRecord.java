@@ -15,7 +15,7 @@ import lombok.NonNull;
 public class BackupLogRecord {
 	
 	@NonNull
-	private Calendar lastBackupTime;
+	private Calendar backupTime;
 	
 	@NonNull
 	public BackupStatus backupStatus;

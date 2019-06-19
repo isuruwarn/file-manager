@@ -1,7 +1,9 @@
 package org.warn.fm.model;
 
+import java.util.Calendar;
 import java.util.Set;
 
+import org.warn.utils.datetime.DateTimeUtil;
 import org.warn.utils.file.FileHelper;
 
 import lombok.AllArgsConstructor;
@@ -20,12 +22,16 @@ public class BackupResult {
 				"<br>" +
 				"%s<br>" + // status message
 				"<br>" +
+				"Backup Time: %s<br>" + 
 				"Backup Location: %s<br>" + 
 				"Total Files: %d<br>" + 
 				"Duration: %.1f second(s)<br>" + 
 				"Saved Files: %d (%s)<br>" +
 				"Failed Files: %d<br><br>" +
 			"</html>";
+	
+	@NonNull
+	private Calendar backupTime;
 	
 	@NonNull
 	private Set<BackupFile> savedFiles;
@@ -58,6 +64,7 @@ public class BackupResult {
 	public String getBackupResultsSummaryHTML() {
 		return String.format( BACKUP_SUMMARY_LBL_HTML, 
 				getBackupStatusMessage(), 
+				DateTimeUtil.fullTimestampSDF.format( backupTime.getTimeInMillis() ),
 				backupLocation,
 				totalFileCount, 
 				duration, 

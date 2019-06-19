@@ -6,7 +6,7 @@ public class BackupResultTest {
 	
 	@Test( expected = NullPointerException.class )
 	public void testNonNullConstructors() {
-		new BackupResult(null, null, 0, 0, null, 0);
+		new BackupResult(null, null, null, 0, 0, null, 0);
 	}
 
 }

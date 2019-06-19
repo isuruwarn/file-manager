@@ -33,7 +33,7 @@ public class BackupLogFrame {
 			data = new String[backupLogs.size()][9];
 			backupLogs.stream().forEachOrdered( f -> {
 				data[i.get()][0] = String.valueOf( i.get()+1 );
-				data[i.get()][1] = DateTimeUtil.fullTimestampSDF.format( f.getLastBackupTime().getTimeInMillis() );
+				data[i.get()][1] = DateTimeUtil.fullTimestampSDF.format( f.getBackupTime().getTimeInMillis() );
 				data[i.get()][2] = f.getBackupStatus().toString();
 				data[i.get()][3] = String.valueOf( f.getTotalFileCount() );
 				data[i.get()][4] = String.valueOf( f.getSavedFileCount() );

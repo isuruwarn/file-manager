@@ -5,11 +5,14 @@ import java.awt.Toolkit;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.model.BackupResult;
 import org.warn.fm.model.BackupScanResult;
+import org.warn.utils.datetime.DateTimeUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,15 +25,17 @@ public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
 	private String backupLocationTxt;
 	private BackupResult lastBackupResult;
 	private JLabel statusLbl;
+	private JTextField scanFromDateTxt;
 	private JButton backupBtn;
 	
 	public BackupProgressBarWorker( JFrame frame, BackupHelper backupHelper, BackupScanResult lastScanResult, String backupLocationTxt, 
-			JLabel statusLbl, JButton backupBtn ) {
+			JLabel statusLbl, JTextField scanFromDateTxt, JButton backupBtn ) {
 		this.frame = frame;
 		this.backupHelper = backupHelper;
 		this.lastScanResult = lastScanResult;
 		this.backupLocationTxt = backupLocationTxt;
 		this.statusLbl = statusLbl;
+		this.scanFromDateTxt = scanFromDateTxt;
 		this.backupBtn = backupBtn;
 	}
 	
@@ -51,12 +56,16 @@ public class BackupProgressBarWorker extends SwingWorker<Void, Integer> {
 	public void done() {
 		Toolkit.getDefaultToolkit().beep();
 		frame.dispose();
-		backupBtn.setEnabled(false);
-		if( lastBackupResult != null ) {
-			statusLbl.setText("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
-			log.debug("Backup process completed in " + lastBackupResult.getDuration() + " second(s)");
-			new BackupResultsFrame( lastBackupResult );
-		}
+		SwingUtilities.invokeLater( () -> {
+			backupBtn.setEnabled(false);
+			if( lastBackupResult != null ) {
+				String statusMessage = "Backup process completed in " + lastBackupResult.getDuration() + " second(s)";
+				log.debug(statusMessage);
+				statusLbl.setText(statusMessage);
+				scanFromDateTxt.setText( DateTimeUtil.fullTimestampSDF.format( lastBackupResult.getBackupTime().getTimeInMillis() ) );
+				new BackupResultsFrame( lastBackupResult );
+			}
+		});
 	}
 	
 }

@@ -122,7 +122,7 @@ public class MainActionListener implements ActionListener {
 							} else {
 								log.debug("Starting backup process for {} file(s)..", lastScanResult.getNewOrModifiedFileCount());
 								this.statusLbl.setText("Starting backup process for " + lastScanResult.getNewOrModifiedFileCount() + " file(s) ...");
-								BackupProgressBar pb = new BackupProgressBar( backupHelper, lastScanResult, backupLocationTxt.getText(), statusLbl, backupBtn );
+								BackupProgressBar pb = new BackupProgressBar( backupHelper, lastScanResult, backupLocationTxt.getText(), statusLbl, scanFromDateTxt, backupBtn );
 								pb.displayAndExecute();
 							}
 							
