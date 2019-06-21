@@ -70,8 +70,8 @@ public class BackupResultsInfoFrame implements ActionListener {
 		table.getColumnModel().getColumn(0).setMaxWidth(100);
 		
 		// set size column width
-		table.getColumnModel().getColumn(4).setPreferredWidth(50);
-		table.getColumnModel().getColumn(4).setMinWidth(50);
+		table.getColumnModel().getColumn(4).setPreferredWidth(75);
+		table.getColumnModel().getColumn(4).setMinWidth(75);
 		table.getColumnModel().getColumn(4).setMaxWidth(150);
 
 		// set created date column width

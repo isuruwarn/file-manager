@@ -61,6 +61,7 @@ public class BackupProgressBar {
 		frame.setPreferredSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		frame.setMinimumSize( new Dimension( FRAME_WIDTH, FRAME_HEIGHT ) );
 		frame.setContentPane( this.panel );
+		frame.setResizable(false);
 		frame.pack();
 		frame.setVisible(true);
 		frame.setLocationRelativeTo(null); // position to center of screen

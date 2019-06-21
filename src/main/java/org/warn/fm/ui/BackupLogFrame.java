@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.JFrame;
@@ -13,12 +14,13 @@ import javax.swing.JTable;
 
 import org.warn.fm.model.BackupLogRecord;
 import org.warn.utils.datetime.DateTimeUtil;
+import org.warn.utils.file.FileHelper;
 
 public class BackupLogFrame {
 	
 	private static final String TITLE = "Backup Log";
 	private static final String[] BACKUP_LOG_TABLE_COLUMNS = { 
-			"", "BackupTime", "Backup Status", "Total Files", "Saved Files", "Saved File Size", "Failed Files", "Duration (s)", "Backup Location" };
+			"", "BackupTime", "Backup Status", "Total Files", "Saved Files", "Saved File Size", "Failed Files", "Duration", "Backup Location" };
 	
 	private static final int BACKUP_LOG_PANEL_WIDTH = 900;
 	private static final int BACKUP_LOG_PANEL_HEIGHT = 600;
@@ -37,9 +39,9 @@ public class BackupLogFrame {
 				data[i.get()][2] = f.getBackupStatus().toString();
 				data[i.get()][3] = String.valueOf( f.getTotalFileCount() );
 				data[i.get()][4] = String.valueOf( f.getSavedFileCount() );
-				data[i.get()][5] = String.valueOf( f.getSavedFileSize() );
+				data[i.get()][5] = String.valueOf( FileHelper.printFileSizeUserFriendly( f.getSavedFileSize() ) );
 				data[i.get()][6] = String.valueOf( f.getFailedFileCount() );
-				data[i.get()][7] = String.valueOf( f.getDuration() );
+				data[i.get()][7] = String.valueOf( DateTimeUtil.formatDuration( TimeUnit.SECONDS, (int) f.getDuration() ) );
 				data[i.get()][8] = f.getBackupLocation();
 				i.incrementAndGet();
 			});

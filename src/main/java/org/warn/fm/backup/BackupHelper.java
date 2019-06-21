@@ -269,6 +269,9 @@ public class BackupHelper {
 		
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime) / 1000;
+		log.info("Backup completed in {} second(s)..", duration);
+		log.info("BackupResults - TotalFiles={}, SavedFiles={}, SavedFileSize={}, FailedFiles={}", 
+				totalFiles, savedFiles.size(), FileHelper.printFileSizeUserFriendly(savedFileSize), failedFiles.size() );
 		
 		BackupResult backupResult = new BackupResult( lastBackupTime, savedFiles, failedFiles, totalFiles, duration, backupLocation, savedFileSize );
 		updateBackupLog( backupResult );

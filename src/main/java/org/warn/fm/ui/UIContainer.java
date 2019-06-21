@@ -157,7 +157,7 @@ public class UIContainer {
 		settingsMenu.add(manageExcludeDirPatterns);
 		settingsMenu.add(manageExcludeFilePatterns);
 		settingsMenu.add(viewBackupLog);
-		settingsMenu.addSeparator();
+		//settingsMenu.addSeparator();
 		//settingsMenu.add(enableDebugLogs);
 		
 		JMenuBar menuBar = new JMenuBar();

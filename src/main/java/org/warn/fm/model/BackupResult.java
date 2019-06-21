@@ -2,6 +2,7 @@ package org.warn.fm.model;
 
 import java.util.Calendar;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import org.warn.utils.datetime.DateTimeUtil;
 import org.warn.utils.file.FileHelper;
@@ -25,7 +26,7 @@ public class BackupResult {
 				"Backup Time: %s<br>" + 
 				"Backup Location: %s<br>" + 
 				"Total Files: %d<br>" + 
-				"Duration: %.1f second(s)<br>" + 
+				"Duration: %s<br>" + 
 				"Saved Files: %d (%s)<br>" +
 				"Failed Files: %d<br><br>" +
 			"</html>";
@@ -67,7 +68,7 @@ public class BackupResult {
 				DateTimeUtil.fullTimestampSDF.format( backupTime.getTimeInMillis() ),
 				backupLocation,
 				totalFileCount, 
-				duration, 
+				DateTimeUtil.formatDuration( TimeUnit.SECONDS, (int) duration ), 
 				savedFiles.size(), FileHelper.printFileSizeUserFriendly( savedFileSize ),
 				failedFiles.size() );
 	}
