@@ -19,7 +19,7 @@ import javax.swing.event.ListSelectionListener;
 
 import org.warn.fm.backup.BackupHelper;
 import org.warn.fm.ui.ListPanelBuilder;
-import org.warn.fm.ui.UIContainer;
+import org.warn.fm.util.GlobalConstants;
 import org.warn.utils.swing.UICommons;
 
 import lombok.RequiredArgsConstructor;
@@ -48,54 +48,24 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 		switch(command) {
 			
 			case ListPanelBuilder.BROWSE_ACTION:
-				if( this.actionType.equals( UIContainer.MANAGE_INCLUDE_DIRS_ACTION ) || this.actionType.equals( UIContainer.MANAGE_EXCLUDE_DIRS_ACTION )
-						|| this.actionType.equals( UIContainer.MANAGE_EXCLUDE_DIR_PATTERNS_ACTION ) ) {
+				
+				if( this.actionType.equals( GlobalConstants.MANAGE_INCLUDE_DIRS ) || this.actionType.equals( GlobalConstants.MANAGE_EXCLUDE_DIRS )
+						|| this.actionType.equals( GlobalConstants.MANAGE_EXCLUDE_DIR_PATTERNS ) ) {
 					UICommons.chooseDirectory( newItemTxt );
 				} else {
 					UICommons.chooseFile( newItemTxt );
 				}
+				addToList();
 				break;
 				
 			case ListPanelBuilder.ADD_ITEM_ACTION:
-				String name = this.newItemTxt.getText();
-		
-				//User didn't type in a unique name...
-				if (name.equals("") || alreadyInList(name)) {
-					Toolkit.getDefaultToolkit().beep();
-					this.newItemTxt.requestFocusInWindow();
-					this.newItemTxt.selectAll();
-					return;
-				}
-				
-				int index = this.jList.getSelectedIndex(); //get selected index
-				if (index == -1) { //no selection, so insert at beginning
-					index = 0;
-				} else {		   //add after the selected item
-					index++;
-				}
-		
-				this.listModel.insertElementAt( name, index );
-				//If we just wanted to add to the end, we'd do this:
-				//listModel.addElement(newItemTxt.getText());
-		
-				//Reset the text field.
-				this.newItemTxt.requestFocusInWindow();
-				this.newItemTxt.setText("");
-		
-				//Select the new item and make it visible.
-				this.jList.setSelectedIndex(index);
-				this.jList.ensureIndexIsVisible(index);
-				
-				//this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
-				this.backupHelper.addToIncludeExcludeList( this.actionType, name );
-				
+				addToList();
 				break;
 			
 			case ListPanelBuilder.REMOVE_ITEM_ACTION:
 				//This method can be called only if
 				//there's a valid selection
 				//so go ahead and remove whatever's selected.
-				name = this.jList.getSelectedValue();
 				int index2 = this.jList.getSelectedIndex();
 				this.listModel.remove(index2);
 
@@ -114,7 +84,6 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 				}
 				
 				this.backupHelper.updateIncludeExcludeList( this.actionType, generateSetFromListModel() );
-				//this.backupHelper.addToIncludeExcludeList( this.actionType, name );
 				
 				break;
 			
@@ -186,4 +155,40 @@ public class ListManagerActionListener implements ActionListener, ListSelectionL
 		}
 		return updatedList;
 	}
+	
+	private void addToList() {
+		
+		String name = this.newItemTxt.getText();
+		
+		//User didn't type in a unique name...
+		if (name.equals("") || alreadyInList(name)) {
+			Toolkit.getDefaultToolkit().beep();
+			this.newItemTxt.requestFocusInWindow();
+			this.newItemTxt.selectAll();
+			return;
+		}
+		
+		int index = this.jList.getSelectedIndex(); //get selected index
+		if (index == -1) { //no selection, so insert at beginning
+			index = 0;
+		} else { //add after the selected item
+			index++;
+		}
+
+		this.listModel.insertElementAt( name, index );
+		//If we just wanted to add to the end, we'd do this:
+		//listModel.addElement(newItemTxt.getText());
+
+		//Reset the text field.
+		this.newItemTxt.requestFocusInWindow();
+		this.newItemTxt.setText("");
+
+		//Select the new item and make it visible.
+		this.jList.setSelectedIndex(index);
+		this.jList.ensureIndexIsVisible(index);
+		
+		this.backupHelper.addToIncludeExcludeList( this.actionType, name );
+		
+	}
+	
 }
