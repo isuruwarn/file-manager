@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.Calendar;
 import java.util.Set;
@@ -18,11 +19,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 
 import org.warn.fm.model.BackupFile;
 import org.warn.utils.datetime.DateTimeUtil;
 import org.warn.utils.file.FileHelper;
 import org.warn.utils.file.FileOperations;
+import org.warn.utils.swing.UICommons;
 
 public class BackupResultsInfoFrame implements ActionListener {
 	
@@ -91,6 +94,7 @@ public class BackupResultsInfoFrame implements ActionListener {
 		fileInfoScrollPane.createHorizontalScrollBar();
 		
 		JMenuItem menuItemSave = new JMenuItem(SAVE_MENU_ITEM_ACTION);
+		menuItemSave.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_S, UICommons.getControlCommandMask() ) );
 		menuItemSave.addActionListener(this);
 		
 		JMenu fileMenu = new JMenu(FILE_MENU_ACTION);

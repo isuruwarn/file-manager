@@ -16,4 +16,8 @@ public class GlobalConstants {
 	public static final String ERR_MSG_SELECT_BACKUP_LOCATION = "Please select backup location";
 	public static final String ERR_MSG_NO_BACKUP_NEEDED = "No new or modified files found";
 	public static final String ERR_MSG_BACKUP_DIR_DOES_NOT_EXIST = "The backup directory does not exist!";
+	
+	public static final String ICON_BACKUP_SUCCESSFUL = "/img/success48.png";
+	public static final String ICON_BACKUP_SOME_FAILED = "/img/some_failed48.png";
+	public static final String ICON_BACKUP_ALL_FAILED = "/img/failed48.png";
 }

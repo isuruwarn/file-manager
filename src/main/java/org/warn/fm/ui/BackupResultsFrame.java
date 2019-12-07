@@ -30,11 +30,11 @@ public class BackupResultsFrame {
 	
 	public BackupResultsFrame( BackupResult backupResult ) {
 		
-		String statusIcon = "/img/success48.png";
+		String statusIcon = GlobalConstants.ICON_BACKUP_SUCCESSFUL;
 		if( backupResult.getBackupStatus().equals( BackupStatus.SOME_FAILED) ) {
-			statusIcon = "/img/some_failed48.png";
+			statusIcon = GlobalConstants.ICON_BACKUP_SOME_FAILED;
 		} else if( backupResult.getBackupStatus().equals( BackupStatus.FAILED) ) {
-			statusIcon = "/img/failed48.png";
+			statusIcon = GlobalConstants.ICON_BACKUP_ALL_FAILED;
 		}
 		
 		JLabel backupStatusIcon = new JLabel( new ImageIcon( getClass().getResource(statusIcon) ) );
