@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 import org.warn.fm.model.BackupFile;
 import org.warn.fm.model.BackupLogRecord;
@@ -206,7 +207,13 @@ public class BackupHelper {
 		log.info("Scan completed in {} second(s)..", duration);
 		log.info("Scan Results - TotalFiles={}, New or Modified Files={}, New or Modified File Size={}", scanResult.getTotalFileCount(), 
 				scanResult.getNewOrModifiedFileCount(), FileHelper.printFileSizeUserFriendly( scanResult.getNewOrModifiedFileSize() ) );
-		
+
+		List<String> newOrModifiedFileNames = scanResult.getNewOrModifiedFiles().stream()
+				.map( f -> f.getPath().toString() )
+				.sorted()
+				.collect(Collectors.toList());
+		UserConfigJsonUtils.updateListInHomeDir( newOrModifiedFileNames, ConfigConstants.FILEMAN_NEW_OR_MODIFIED_FILES_FILE );
+
 		userConfig.updateConfig( ConfigConstants.EL_LAST_SCAN_TIME, DateTimeUtil.fullTimestampSDF.format( endTime ) );
 		if( strLastBackupLocation != null ) {
 			this.excludeDirs.remove(strLastBackupLocation);

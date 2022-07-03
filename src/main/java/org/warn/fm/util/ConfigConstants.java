@@ -8,6 +8,7 @@ public class ConfigConstants {
 	public static final String FILEMAN_HOME_DIR_NAME = ".fileman";
 	public static final String FILEMAN_CONFIG_FILE = "config.json";
 	public static final String FILEMAN_BACKUP_LOG_FILE = FILEMAN_HOME_DIR_NAME + Env.FILE_SEPERATOR + "backuplog.json";
+	public static final String FILEMAN_NEW_OR_MODIFIED_FILES_FILE = FILEMAN_HOME_DIR_NAME + Env.FILE_SEPERATOR + "new_or_modified_files.json";
 	public static final String APP_PROPERTY_FILE_NAME = "application.properties";
 	
 	// logging properties
